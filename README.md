@@ -1,6 +1,6 @@
-# Flourish
-
-<img src="images/flourish.svg" alt="drawing" width="150"/>
+<div align="center">
+<img src="images/flourish.png" alt="drawing" width="150"/>
+</div align>
 
 ## Introduction 
 Flourish is an interactive programming environment that support incremental develop and deployee the web application. Flourish brings a new way of programming with help of the programming language, editor, debugging mechanism, unit testing suite which tightly are coupled each other for seemless experience of coding.
