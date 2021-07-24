@@ -1,11 +1,11 @@
 <div align="center">
-<img src="images/flourish.png" alt="drawing" width="150"/>
+<img src="images/flourish.png" alt="drawing" width="400"/>
 </div align>
 
-## Introduction 
 Flourish is an interactive programming environment that support incremental develop and deployee the web application. Flourish brings a new way of programming with help of the programming language, editor, debugging mechanism, unit testing suite which tightly are coupled each other for seemless experience of coding.
 
 The core concept arround flourish is that you can code only during run time. This concept is similiar to the lisp like programming language; where distiction between compile time and runtime blurred. However with flourish we have additional restriction in place which avoids any programing that happanse ahead of runtime.
+
 
 ## Rationale
 
