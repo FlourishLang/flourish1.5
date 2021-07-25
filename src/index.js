@@ -1,4 +1,4 @@
 
-import setupEditor from './hello'
+import setupEditor from './editor'
 
 setupEditor(document.body)

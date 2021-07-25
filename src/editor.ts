@@ -2,7 +2,7 @@
 import { EditorState, EditorView, basicSetup } from "@codemirror/basic-setup"
 import { javascript } from "@codemirror/lang-javascript"
 
-export default function setupEditor(dom) {
+export default function setupEditor(dom: Element) {
 
     let editor = new EditorView({
         state: EditorState.create({
