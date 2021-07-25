@@ -1,4 +1,4 @@
 
-import hello from './hello'
+import setupEditor from './hello'
 
-hello();
+setupEditor(document.body)

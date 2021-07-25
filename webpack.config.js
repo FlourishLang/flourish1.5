@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode:"development",
+  mode: "development",
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -17,9 +17,10 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: path.join(__dirname, 'livedist'),
+    contentBase: path.join(__dirname, 'liveDist'),
     compress: true,
     port: 9000,
   },
   plugins: [new HtmlWebpackPlugin()],
+  devtool: 'cheap-module-source-map',
 };
