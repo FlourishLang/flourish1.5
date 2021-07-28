@@ -1,7 +1,13 @@
-import CodeMirror from './lib/codemirror'
+
 import './css/doc/docs.css'
 import './css/lib/codemirror.css'
 import './css/theme/material.css'
+
+
+import CodeMirror from './lib/codemirrorES6'
+
+
+
 var editor = new CodeMirror(document.getElementById("code_left"), {
     lineNumbers: true,
     firstLineNumber: 0,
@@ -50,3 +56,6 @@ editor.setOption("extraKeys", {
         cm.replaceSelection(spaces);
     }
 });
+
+
+import "./addon/edit/matchbrackets.js"
