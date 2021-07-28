@@ -1,0 +1,161 @@
+<!doctype html>
+
+<head>
+  <title>CodeMirror</title>
+  <meta charset="utf-8" />
+
+</head>
+
+<link rel=stylesheet href="css/lib/codemirror.css">
+<link rel=stylesheet href="css/doc/docs.css">
+<link rel=stylesheet href="css/theme/material.css">
+
+
+
+<script src="lib/codemirror.js"></script>
+
+<link rel="stylesheet" href="addon/hint/show-hint.css">
+<script src="addon/hint/show-hint.js"></script>
+<script src="flourish/hint.js"></script>
+
+<script src="addon/edit/matchbrackets.js"></script>
+<script src="addon/edit/closebrackets.js"></script>
+
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script src="addon/selection/active-line.js"></script>
+<script src="flourish/zipper.js"></script>
+<script src="flourish/treeSitterZipper.js"></script>
+
+<script src="flourish/flourishMode.js"></script>
+<script src="flourish/treeSitter/treeSitter.js"></script>
+<script src="addon/lint/lint.js"></script>
+<script src="flourish/lint.js"></script>
+
+<script src="flourish/anykeyComplete.js"></script>
+<script src="flourish/activeBlock.js"></script>
+<script src="flourish/autoformat.js"></script>
+<script src="flourish/autoscrollsync.js"></script>
+<script src="flourish/formatFlourish.js"></script>
+<script src="flourish/showChangesMark.js"></script>
+
+<script src="flourish/syncOther.js"></script>
+
+<link rel="stylesheet" href="addon/lint/lint.css">
+
+
+
+<style>
+  .CodeMirror {
+    height: auto;
+    width: 100%;
+    border: 1px solid #ddd;
+    position: relative;
+  }
+
+  .CodeMirror-scroll {
+    max-height: 500px;
+  }
+
+  .CodeMirror pre {
+    padding-left: 7px;
+    line-height: 1.25;
+  }
+
+  .banner {
+    background: #ffc;
+    padding: 6px;
+    border-bottom: 2px solid silver;
+  }
+
+  .banner div {
+    margin: 0 auto;
+    max-width: 700px;
+    text-align: center;
+  }
+
+  .changed-background {
+    background-color: rgba(255, 0, 255, 0.208);
+  }
+
+  .formated-background {
+    background-color: rgb(43, 255, 0);
+  }
+
+  .edited-background {
+    background-color: rgba(0, 255, 255, 0.201)
+  }
+
+  .afterError-background {
+    background-color: rgba(255, 72, 0, 0.208);
+    cursor: default;
+  }
+
+  .activeBlock {
+    width: 5px;
+  }
+
+  .cm-s-default .cm-closed {
+    color: rgba(0.1, 0.1, 0.1, 0.05);
+    cursor: default;
+  }
+
+  .cm-s-default .cm-inactive {
+    color: rgba(0.1, 0.1, 0.1, 0.5);
+    cursor: default;
+  }
+
+  .cm-tab {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
+    background-position: right;
+    background-repeat: no-repeat;
+  }
+
+
+
+  .execLine {
+    border-right: 3px solid green;
+  }
+
+  .nonExecLine {
+    border-right: 3px solid cyan;
+    transition: transform .2s;
+
+    /* Animation */
+  }
+
+  .nonExecLine:hover {
+    transform: scaleX(-3) translate(-2px, 0px);
+    transition-delay: 0.5s;
+  }
+
+  .execLine:hover {
+    transform: scaleX(-3) translate(-2px, 0px);
+    transition-delay: 0.5s;
+  }
+</style>
+
+<!-- <form style="position: relative; margin-top: .5em;"><textarea id=demotext>
+print [innerarge sd ] 
+set a [+ err sdas]
+print asdasd (+ asdas)
+defun [max x y]
+defun [max [x 200] [y 455]]
+  </textarea>
+  <script>
+    var content = localStorage.getItem("edtordata"); 
+    if (content) {
+       document.getElementById("demotext").value = content;
+    } -->
+
+<div id="code_left" style="width: 80%;height: 100%;float: left; "></div>
+
+<div id="code_right" style="width: 20%;height: 100%;float: left;"></div>
+
+<script>
+
+ 
+    // editor2.setValue("\n\n\n");
+    // editor2.replaceRange("www", CodeMirror.Pos(2, 0),CodeMirror.Pos(3, 0));
+
+
+</script>

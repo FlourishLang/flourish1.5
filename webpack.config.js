@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: "development",
-  entry: './src/index.js',
+  entry: './src/frontend/index.js',
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: 'index_bundle.js',
@@ -13,7 +13,11 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.tsx?$/, loader: "ts-loader" }
+      { test: /\.tsx?$/, loader: "ts-loader" },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
     ]
   },
   devServer: {
@@ -21,6 +25,8 @@ module.exports = {
     compress: true,
     port: 9000,
   },
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [new HtmlWebpackPlugin({
+    template:"./public/index.html"
+  })],
   devtool: 'cheap-module-source-map',
 };
