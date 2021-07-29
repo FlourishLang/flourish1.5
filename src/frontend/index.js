@@ -3,6 +3,7 @@ import './css/doc/docs.css'
 import './css/lib/codemirror.css'
 import './css/theme/material.css'
 
+import './css/custom.css'
 
 import CodeMirror from './lib/codemirrorES6'
 
@@ -59,3 +60,28 @@ editor.setOption("extraKeys", {
 
 
 import "./addon/edit/matchbrackets.js"
+import "./addon/edit/closebrackets.js"
+import "./addon/selection/active-line.js"
+
+import "./addon/hint/show-hint.css"
+import "./addon/hint/show-hint.js"
+
+import "./addon/lint/lint.css"
+import "./addon/lint/lint.js"
+
+import "./addon/flourish/hint.js"
+import "./addon/flourish/zipper.js"
+import "./addon/flourish/treeSitterZipper.js"
+
+import "./addon/flourish/flourishMode.js"
+import "./addon/flourish/treeSitter.js"
+import "./addon/flourish/lint.js"
+
+import "./addon/flourish/anykeyComplete.js"
+import "./addon/flourish/activeBlock.js"
+import "./addon/flourish/autoformat.js"
+import "./addon/flourish/autoscrollsync.js"
+import "./addon/flourish/formatFlourish.js"
+import "./addon/flourish/showChangesMark.js"
+
+import "./addon/flourish/syncOther.js"
