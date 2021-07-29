@@ -50,7 +50,7 @@ export default class FlourishParser {
         let mutatedChildren = accumulateMutatedLeaf(this.fNodeTree.root);
         let mutatedRoot = null
         if (mutatedChildren.length) {
-            mutatedRoot = leastCommonAncesestorArray(mutatedChildren, this.fNodeTree.leastCommonAncesestor);
+            mutatedRoot = leastCommonAncestorArray(mutatedChildren, this.fNodeTree.leastCommonAncestor);
 
         }
 
@@ -69,7 +69,7 @@ export default class FlourishParser {
 
 }
 
-function leastCommonAncesestorArray(list: FNode[], leastCommonAncesestor: any) {
+function leastCommonAncestorArray(list: FNode[], leastCommonAncesestor: any) {
 
     return list.reduce((p, c) => leastCommonAncesestor(p, c));
     ;
@@ -85,21 +85,21 @@ function leastCommonAncesestorArray(list: FNode[], leastCommonAncesestor: any) {
     // let first = list.slice(0,center)
     // let second = list.slice(center);
 
-    // return this._leastCommonAncesestorArray(first,second);
+    // return this._leastCommonAncestorArray(first,second);
 
 }
 
 
 export class FNodeTree {
-    public leastCommonAncesestor: any
+    public leastCommonAncestor: any
 
     constructor(public root: FNode) {
-        this.leastCommonAncesestor = leastCommonAncestorFunctionGenerator(root, (node: FNode) => node.children);
+        this.leastCommonAncestor = leastCommonAncestorFunctionGenerator(root, (node: FNode) => node.children);
     }
 
     update(root: FNode){
         this.root = root;
-        this.leastCommonAncesestor = leastCommonAncestorFunctionGenerator(root, (node: FNode) => node.children);
+        this.leastCommonAncestor = leastCommonAncestorFunctionGenerator(root, (node: FNode) => node.children);
     }
 
 

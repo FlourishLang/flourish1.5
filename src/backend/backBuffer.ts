@@ -1,34 +1,34 @@
 
-function spliceSplit(str:string, index:number, count:number, add:string) {
-    var ar = str.split('');
-    ar.splice(index, count, add);
-    return ar.join('');
+function spliceSplit(str: string, index: number, count: number, add: string) {
+  var ar = str.split('');
+  ar.splice(index, count, add);
+  return ar.join('');
 }
 
 interface codeMirrorPos {
-    line:number;
-    ch:number;
-    sticky?:string;
-    xRel?:number;
+  line: number;
+  ch: number;
+  sticky?: string;
+  xRel?: number;
 }
 
-interface codeMirrorChange{
-    from:codeMirrorPos;
-    to:codeMirrorPos;
-    removed:string[];
-    text:string[];
-    origin?:string;
+interface codeMirrorChange {
+  from: codeMirrorPos;
+  to: codeMirrorPos;
+  removed: string[];
+  text: string[];
+  origin?: string;
 }
 
 export default class BackBuffer {
 
 
-    constructor(private text:string) {
+  constructor(private text: string) {
 
-    }
+  }
 
 
-   treeEditForEditorChange(change:codeMirrorChange, startIndex:number) {
+  treeEditForEditorChange(change: codeMirrorChange, startIndex: number) {
     const oldLineCount = change.removed.length;
     const newLineCount = change.text.length;
     const lastLineLength = change.text[newLineCount - 1].length;
@@ -54,38 +54,37 @@ export default class BackBuffer {
   }
 
 
-    applyChanges(changes:codeMirrorChange) {
-        let lines = this.text.split('\n');
-        let firstLine = lines[changes.from.line];
-        let lastLine = lines[changes.to.line];
-        let firstLineFirstPart = firstLine.slice(0, changes.from.ch);
-        let lastLineLastPart = lastLine.slice(changes.to.ch);
+  applyChanges(changes: codeMirrorChange) {
+    let lines = this.text.split('\n');
+    let firstLine = lines[changes.from.line];
+    let lastLine = lines[changes.to.line];
+    let firstLineFirstPart = firstLine.slice(0, changes.from.ch);
+    let lastLineLastPart = lastLine.slice(changes.to.ch);
 
-        let insertPart = changes.text.join('\n');
+    let insertPart = changes.text.join('\n');
 
-        let beforefirstPartLines = lines.slice(0, changes.from.line);
+    let beforeFirstPartLines = lines.slice(0, changes.from.line);
 
-        let afterlastPartLines = lines.slice(changes.to.line + 1);
+    let afterLastPartLines = lines.slice(changes.to.line + 1);
 
-        
-        let centerPart = firstLineFirstPart + insertPart + lastLineLastPart;
 
-        let finalLines = beforefirstPartLines.concat( centerPart).concat(afterlastPartLines);
-        let result = finalLines.join('\n');
-        this.text = result;
+    let centerPart = firstLineFirstPart + insertPart + lastLineLastPart;
 
-        //TODO:Optimize this
-        let beforeInsertionLines = beforefirstPartLines.concat(firstLineFirstPart);
-        let beforeInsertionPart =  beforeInsertionLines.join('\n')
-        let startIndex = beforeInsertionPart.length;
+    let finalLines = beforeFirstPartLines.concat(centerPart).concat(afterLastPartLines);
+    let result = finalLines.join('\n');
+    this.text = result;
 
-        let posInfo =   this.treeEditForEditorChange(changes, startIndex);
+    //TODO:Optimize this
+    let beforeInsertionLines = beforeFirstPartLines.concat(firstLineFirstPart);
+    let beforeInsertionPart = beforeInsertionLines.join('\n')
+    let startIndex = beforeInsertionPart.length;
 
-        return { text: result, posInfo }
-    }
+    let posInfo = this.treeEditForEditorChange(changes, startIndex);
+
+    return { text: result, posInfo }
+  }
 
 
 
 }
 
-module.exports = BackBuffer;

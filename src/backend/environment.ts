@@ -31,11 +31,11 @@ export default class Environment {
     }
 
     public getItem(identifier: string): any {
-        
-        if (!this.hasItem(identifier) ) {
+
+        if (!this.hasItem(identifier)) {
             if (this.superEnvironment)
                 return this.superEnvironment.getItem(identifier);
-            
+
             return undefined;
 
         } else {
@@ -74,7 +74,7 @@ let builtInEnvDict = {
     'multiply': createMethod(function () {
         return Array.from(arguments).reduce((p, c) => p * c)
     }),
-    'devide': createMethod(function () {
+    'divide': createMethod(function () {
         return Array.from(arguments).reduce((p, c) => p / c)
     }),
     'mod': createMethod(function () {
@@ -102,9 +102,9 @@ let builtInEnvDict = {
 };
 
 
-let builtInEnv:Environment|null =null;
+let builtInEnv: Environment | null = null;
 function getBuiltInEnv() {
-    if(builtInEnv==null){
+    if (builtInEnv == null) {
         let base = new Environment();
         base.dict = builtInEnvDict;
         builtInEnv = base;
@@ -114,7 +114,7 @@ function getBuiltInEnv() {
 
 
 export function createEnvironment() {
-    return extendEnvironment(getBuiltInEnv());    
+    return extendEnvironment(getBuiltInEnv());
 }
 
 export function extendEnvironment(base: Environment) {

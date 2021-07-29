@@ -64,16 +64,16 @@ function patchTree(tree: FNodeTree, result: any, executor: Executer, changes: an
   }
 }
 
-let oldsocket: Socket | null = null;
+let oldSocket: Socket | null = null;
 
 io.on('connection', socket => {
 
   //For debugging purpose we have only one connection active at a time
-  if (oldsocket) {
-    oldsocket.disconnect();
-    oldsocket = null;
+  if (oldSocket) {
+    oldSocket.disconnect();
+    oldSocket = null;
   }
-  oldsocket = socket;
+  oldSocket = socket;
 
 
   // descendantForPosition
@@ -118,8 +118,8 @@ io.on('connection', socket => {
     let tree = parser!.getTree();
 
     let result = executer!.executeTillLine(lineNumber);
-    let finaltree = patchTree(tree, result, executer!, null, lineConsole!);
-    socket.emit('parseComplete', finaltree);
+    let finalTree = patchTree(tree, result, executer!, null, lineConsole!);
+    socket.emit('parseComplete', finalTree);
 
 
   });
@@ -130,8 +130,8 @@ io.on('connection', socket => {
     let tree = parser!.getTree();
 
     let result = executer!.execute({ type:"queryEnv"})
-    let finaltree = patchTree(tree, result, executer!, null, lineConsole!);
-    socket.emit('requestEnvGot', finaltree);
+    let finalTree = patchTree(tree, result, executer!, null, lineConsole!);
+    socket.emit('requestEnvGot', finalTree);
 
 
   });

@@ -1,7 +1,7 @@
 import blockExecutor from './block';
 import  evaluate  from '../evaluate';
 import FNode from "../FNode";
-import Environment from '../enviroment'
+import Environment from '../environment'
 import LineConsole from "../lineConsole";
 import { executorType } from '../executer'
 
@@ -13,11 +13,11 @@ function markBlockLiveStatus(block: FNode, status: string) {
 }
 
 // function testBlockLiveStatus(block, status) {
-//     let statusexist = block["liveStatus"];
-//     if (statusexist == status) {
+//     let statusExist = block["liveStatus"];
+//     if (statusExist == status) {
 //         return true;
 //     }
-//     if (!statusexist && status == "")
+//     if (!statusExist && status == "")
 //         return true;
 
 //     return false;
@@ -61,7 +61,7 @@ export default function* whileExecutorFunction(tree: FNode, environment: Environ
 
             yield* blockExecutor(elseBody, environment, lineConsole)
         } else {
-            markBlockLiveStatus(body, "inactive-whilelone");
+            markBlockLiveStatus(body, "inactive-whileLone");
         }
 
     }

@@ -1,5 +1,5 @@
 import FNode, { FNodePoint } from "./FNode";
-import Environment from "./enviroment";
+import Environment from "./environment";
 
 
 
@@ -13,9 +13,9 @@ export class ERROR {
         this.endPosition = endPosition;
     }
 
-    hasValidPosition(){
-        return !(this.startPosition.row == this.endPosition.row && 
-        this.startPosition.column == this.endPosition.column )
+    hasValidPosition() {
+        return !(this.startPosition.row == this.endPosition.row &&
+            this.startPosition.column == this.endPosition.column)
     }
 
     static fromAst(ast: FNode, message: string) {
@@ -23,9 +23,9 @@ export class ERROR {
     }
 }
 
-export class ExternalMutationERROR extends ERROR{
+export class ExternalMutationERROR extends ERROR {
 
-    constructor(readonly mutatedBlock: FNode){
+    constructor(readonly mutatedBlock: FNode) {
         super("External mutation")
     }
 }
@@ -143,11 +143,11 @@ export let specialEnv: { [name: string]: any } = {
         let matchingEnv = env.getMatchingEnv("___RETURN___");
 
         if (matchingEnv == undefined) {
-            throw `Unaled to handle return`;
+            throw `Unable to handle return`;
 
         } else {
             let res = yield* evaluate(result[0], env);
-            matchingEnv.setItem("___RETURN___", res );
+            matchingEnv.setItem("___RETURN___", res);
             return res;
 
         }
@@ -251,7 +251,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
             }
             break;
 
-        case "inifixexpression": {
+        case "infixExpression": {
 
             let operator = yield* evaluate(ast.children[2], env);
             let left = yield* evaluate(ast.children[1], env);
@@ -283,7 +283,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
         case "%":
             return specialEnv.get({ leafText: "mod" }, env);
         case "/":
-            return specialEnv.get({ leafText: "devide" }, env);
+            return specialEnv.get({ leafText: "divide" }, env);
         case "=":
             return specialEnv.get({ leafText: "equals" }, env);
         case "<":

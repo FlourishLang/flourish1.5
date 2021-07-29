@@ -1,5 +1,6 @@
 {
   "restartable": "rs",
+  "signal": "SIGHUP",
   "ignore": [".git", "node_modules/", "dist/", "coverage/"],
   "watch": ["src/"],
   "execMap": {

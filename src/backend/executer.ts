@@ -4,7 +4,7 @@ import { FNodeTree } from './parser'
 import FNode, { fNodeSearchByLineNumber } from './FNode'
 import LineConsole from './lineConsole'
 import { ERROR, ExternalMutationERROR } from './evaluate'
-import { createEnvironment } from './enviroment'
+import { createEnvironment } from './environment'
 
 export interface executorYield {
     type: "ERROR" | "isDesiredActiveBlock" | "EOF";
@@ -22,7 +22,7 @@ export interface executorInput {
 
 export interface executorNext {
     mutatedBlock: FNode,
-    type: "internalMutation" | "externalMutation" | "sameblockMutation"
+    type: "internalMutation" | "externalMutation" | "sameBlockMutation"
 }
 
 export type executorType = Generator<executorYield, void, executorNext>;
@@ -32,13 +32,13 @@ export default class Executer {
     needToReset: boolean;
     activeBlock: FNode | null;
     desiredActiveBlock: FNode | null;
-    executor: executorType;
+    processor: executorType;
 
     constructor(private tree: FNodeTree, private lineConsole: LineConsole) {
         this.desiredActiveBlock = null; //Block where execution cycle supposed to run
         this.activeBlock = null;
         this.needToReset = false;
-        this.executor = this.reset();
+        this.processor = this.reset();
     }
 
     switchDesiredActiveBlock(newBlock: FNode) {
@@ -55,11 +55,11 @@ export default class Executer {
 
 
     execute(input: executorInput) {
-        
+
 
         let command: executorNext = {
             mutatedBlock: input.mutatedBlock!,
-            type: "sameblockMutation"
+            type: "sameBlockMutation"
         }
 
         switch (input.type) {
@@ -96,15 +96,15 @@ export default class Executer {
                 break;
         }
 
-       
+
         if (this.needToReset) {
-            this.executor = this.reset();
+            this.processor = this.reset();
             this.needToReset = false;
         }
 
 
 
-        let result = this.executor.next(command);
+        let result = this.processor.next(command);
 
         if (result.done == true) {
             this.needToReset = true;
@@ -139,7 +139,7 @@ export default class Executer {
 
 
     reset() {
-        return mainExecutorFunction(this.tree.root, this.lineConsole);
+        return mainProcessorFunction(this.tree.root, this.lineConsole);
 
     }
 
@@ -183,7 +183,7 @@ export default class Executer {
 
 
 
-function* mainExecutorFunction(tree: FNode, lineConsole: LineConsole): Generator<executorYield, any, executorNext> {
+function* mainProcessorFunction(tree: FNode, lineConsole: LineConsole): Generator<executorYield, any, executorNext> {
 
     do {
 

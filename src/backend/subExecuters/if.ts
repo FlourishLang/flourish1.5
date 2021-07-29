@@ -2,7 +2,7 @@ import blockExecutor from './block';
 import  evaluate  from '../evaluate';
 import LineConsole from "../lineConsole";
 import FNode from "../FNode";
-import Environment from '../enviroment'
+import Environment from '../environment'
 import { executorType } from '../executer'
 
 
@@ -43,7 +43,7 @@ export default function* ifExecutorFunction(tree: FNode, environment: Environmen
 
             yield* blockExecutor(elseBody, environment, lineConsole)
         } else {
-            markBlockLiveStatus(body, "inactive-iflone");
+            markBlockLiveStatus(body, "inactive-ifLone");
         }
 
     }

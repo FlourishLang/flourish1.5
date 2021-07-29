@@ -53,7 +53,7 @@
 
         // let isOnmark = codemirror.state.treeSitterParse.liveStatusMarks.find((mark) => mark.start <= line
         //     && mark.end >= line);
-        // if (isOnmark && isOnmark.status === "inactive-iflone") {
+        // if (isOnmark && isOnmark.status === "inactive-ifLone") {
         //     let data = {
         //         list: [{ text: "else:\n  code", displayText: "else:\n  code" }],
         //         from: CodeMirror.Pos(isOnmark.end - 1, 0),

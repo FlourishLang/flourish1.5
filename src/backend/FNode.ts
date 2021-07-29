@@ -136,7 +136,7 @@ function reConciliationNode(oldFNodeTree: FNode, oldTsTree: TSTree, newTsTree: T
         return oldFNodeTree;
 
     } else if (isTypesEqual(oldTsTree, newTsTree)) {
-        oldFNodeTree.isMutated = true;//Childrens changed
+        oldFNodeTree.isMutated = true;//Children changed
         oldFNodeTree.apply(newTsTree);
         let indexOffSet = 0;
         for (let index = 0; index < newTsTree.childCount; index++) {
@@ -221,20 +221,20 @@ function clearNonMutation(fNode: FNode) {
         fNode.children.forEach(element => clearNonMutation(element));
 }
 
-function accumulateMutatedLeafInternal(fNode: FNode, resultarray: FNode[]) {
+function accumulateMutatedLeafInternal(fNode: FNode, resultArray: FNode[]) {
 
     if (fNode.isMutated == false)
         return;
     if (fNode.children.length == 0)
-        resultarray.push(fNode);
+        resultArray.push(fNode);
     else {
-        let beforeLenght = resultarray.length;
+        let beforeLength = resultArray.length;
         fNode.children.forEach(element => {
-            accumulateMutatedLeafInternal(element, resultarray);
+            accumulateMutatedLeafInternal(element, resultArray);
         });
-        let afterLenght = resultarray.length;
-        if (beforeLenght == afterLenght)
-            resultarray.push(fNode);
+        let afterLength = resultArray.length;
+        if (beforeLength == afterLength)
+            resultArray.push(fNode);
 
     }
 
@@ -272,7 +272,7 @@ export function reconciliationTree(oldFNodeTree: FNode, oldTsTree: TSRootTree, n
 
 
 
-export function fNodeSearchByLineNumber(tree: FNode, linenum: number) {
+export function fNodeSearchByLineNumber(tree: FNode, lineNumber: number) {
     function adjustedEndPosition(end: FNodePoint) {
         if (end.column == 0 && end.row > 0) {
             return { row: end.row - 1, column: end.column };
@@ -281,7 +281,7 @@ export function fNodeSearchByLineNumber(tree: FNode, linenum: number) {
     }
 
     let cursor: FNode | null = tree;
-    // Traverse untill root reaches to dead end 
+    // Traverse until root reaches to dead end 
     let lastBlock = null;
 
 
@@ -289,7 +289,7 @@ export function fNodeSearchByLineNumber(tree: FNode, linenum: number) {
         if (cursor.type == "block")
             lastBlock = cursor;
 
-        let result = bs(cursor.children, linenum, (element: FNode, needle: number) => {
+        let result = bs(cursor.children, lineNumber, (element: FNode, needle: number) => {
 
             if (adjustedEndPosition(element.endPosition).row < needle) {
                 return -1;
@@ -304,9 +304,9 @@ export function fNodeSearchByLineNumber(tree: FNode, linenum: number) {
 
         });
 
-        let resultnode: FNode = cursor.children[result];
-        if (resultnode) {
-            cursor = resultnode;
+        let resultNode: FNode = cursor.children[result];
+        if (resultNode) {
+            cursor = resultNode;
         } else {
             cursor = null;
         }
