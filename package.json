@@ -8,7 +8,8 @@
     "build": "webpack --mode production --devtool source-map",
     "frontend:start": "webpack serve",
     "backend:start": "nodemon --config nodemon.json --inspect src/backend/index.ts",
-    "test": "mocha -r ts-node/register test/*.ts",
+    "test": "mocha -r ts-node/register test/*.ts", 
+    "test:debug": "node --inspect-brk node_modules/./mocha/bin/_mocha -r ts-node/register test/*.ts",
     "start": "concurrently --kill-others \"npm run frontend:start\" \"npm run backend:start\" "
   },
   "repository": {

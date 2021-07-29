@@ -251,7 +251,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
             }
             break;
 
-        case "infixExpression": {
+        case "inifixexpression": {
 
             let operator = yield* evaluate(ast.children[2], env);
             let left = yield* evaluate(ast.children[1], env);
