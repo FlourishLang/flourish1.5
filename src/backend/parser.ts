@@ -69,17 +69,17 @@ export default class FlourishParser {
 
 }
 
-function leastCommonAncestorArray(list: FNode[], leastCommonAncesestor: any) {
+function leastCommonAncestorArray(list: FNode[], leastCommonAncestor: any) {
 
-    return list.reduce((p, c) => leastCommonAncesestor(p, c));
+    return list.reduce((p, c) => leastCommonAncestor(p, c));
     ;
-    //TODO investicate optimized way;
+    //TODO investigate optimized way;
 
     // if(list.length==1)
     //     return  list[0];
 
     // if(list.length==2)
-    //     return this.leastCommonAncesestor(list[0],list[1]);
+    //     return this.leastCommonAncestor(list[0],list[1]);
 
     // let center = Math.ceil(list.length/2);
     // let first = list.slice(0,center)

@@ -1,5 +1,5 @@
 import evaluate from '../src/backend/evaluate';
-import {createEnvironment,extendEnvironment} from '../src/backend/enviroment';
+import {createEnvironment,extendEnvironment} from '../src/backend/environment';
 import assert from 'assert';
 import Parser from '../src/backend/parser';
 

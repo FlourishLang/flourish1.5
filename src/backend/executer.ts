@@ -1,12 +1,12 @@
 
-import statementBlockExecutor, { patchError, patchErrorToEvent } from "./subExecuters/block";
+import statementBlockProcessor, { patchError, patchErrorToEvent } from "./subProcessor/block";
 import { FNodeTree } from './parser'
 import FNode, { fNodeSearchByLineNumber } from './FNode'
 import LineConsole from './lineConsole'
 import { ERROR, ExternalMutationERROR } from './evaluate'
 import { createEnvironment } from './environment'
 
-export interface executorYield {
+export interface processorYield {
     type: "ERROR" | "isDesiredActiveBlock" | "EOF";
     error: ERROR | null
     activeBlock: FNode | null;
@@ -20,19 +20,19 @@ export interface executorInput {
 
 
 
-export interface executorNext {
+export interface processorInput {
     mutatedBlock: FNode,
     type: "internalMutation" | "externalMutation" | "sameBlockMutation"
 }
 
-export type executorType = Generator<executorYield, void, executorNext>;
+export type processorType = Generator<processorYield, void, processorInput>;
 
 export default class Executer {
 
     needToReset: boolean;
     activeBlock: FNode | null;
     desiredActiveBlock: FNode | null;
-    processor: executorType;
+    processor: processorType;
 
     constructor(private tree: FNodeTree, private lineConsole: LineConsole) {
         this.desiredActiveBlock = null; //Block where execution cycle supposed to run
@@ -57,7 +57,7 @@ export default class Executer {
     execute(input: executorInput) {
 
 
-        let command: executorNext = {
+        let command: processorInput = {
             mutatedBlock: input.mutatedBlock!,
             type: "sameBlockMutation"
         }
@@ -76,7 +76,7 @@ export default class Executer {
 
                     } else {
                         try {
-                            command.mutatedBlock = this.tree.leastCommonAncesestor(input.mutatedBlock, this.activeBlock)
+                            command.mutatedBlock = this.tree.leastCommonAncestor(input.mutatedBlock, this.activeBlock)
                         } catch (error) {
                             command.mutatedBlock = input.mutatedBlock as FNode;
                         }
@@ -146,9 +146,9 @@ export default class Executer {
 
 
 
-    setActiveLine(linenumber: number) {
+    setActiveLine(lineNumber: number) {
 
-        let expectedActiveBlock = fNodeSearchByLineNumber(this.tree.root, linenumber);
+        let expectedActiveBlock = fNodeSearchByLineNumber(this.tree.root, lineNumber);
         if (expectedActiveBlock) {
             this.switchDesiredActiveBlock(expectedActiveBlock)
             return true;
@@ -158,9 +158,9 @@ export default class Executer {
     }
 
 
-    executeTillLine(linenumber: number) {
+    executeTillLine(lineNumber: number) {
 
-        let gotLine = this.setActiveLine(linenumber);
+        let gotLine = this.setActiveLine(lineNumber);
         if (!gotLine)
             return false;
 
@@ -183,7 +183,7 @@ export default class Executer {
 
 
 
-function* mainProcessorFunction(tree: FNode, lineConsole: LineConsole): Generator<executorYield, any, executorNext> {
+function* mainProcessorFunction(tree: FNode, lineConsole: LineConsole): Generator<processorYield, any, processorInput> {
 
     do {
 
@@ -193,7 +193,7 @@ function* mainProcessorFunction(tree: FNode, lineConsole: LineConsole): Generato
                 return patchErrorToEvent(patchError(tree, "statementError"))
             };
 
-            yield* statementBlockExecutor(tree.children[0], createEnvironment(), lineConsole);
+            yield* statementBlockProcessor(tree.children[0], createEnvironment(), lineConsole);
             if (tree.children.length == 2 && tree.children[1].type == "ERROR")
                 throw patchError(tree.children[1], "statementError");
         } catch (error) {

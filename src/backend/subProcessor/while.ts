@@ -3,7 +3,7 @@ import  evaluate  from '../evaluate';
 import FNode from "../FNode";
 import Environment from '../environment'
 import LineConsole from "../lineConsole";
-import { executorType } from '../executer'
+import { processorType } from '../executer'
 
 
 
@@ -23,7 +23,7 @@ function markBlockLiveStatus(block: FNode, status: string) {
 //     return false;
 // }
 
-export default function* whileExecutorFunction(tree: FNode, environment: Environment, lineConsole: LineConsole): executorType{
+export default function* whileProcessorFunction(tree: FNode, environment: Environment, lineConsole: LineConsole): processorType{
 
     let count = 0;
     let maxCount = 100;

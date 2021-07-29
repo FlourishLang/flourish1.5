@@ -3,7 +3,7 @@ import  evaluate  from '../evaluate';
 import LineConsole from "../lineConsole";
 import FNode from "../FNode";
 import Environment from '../environment'
-import { executorType } from '../executer'
+import { processorType } from '../executer'
 
 
 
@@ -14,7 +14,7 @@ function markBlockLiveStatus(block: FNode, status: string) {
 
 
 
-export default function* ifExecutorFunction(tree: FNode, environment: Environment, lineConsole: LineConsole): executorType {
+export default function* ifProcessorFunction(tree: FNode, environment: Environment, lineConsole: LineConsole): processorType {
 
     let expressionNode = tree.children[0].children[0].children[1];
     let endNode = tree.children[0].children[tree.children[0].children.length - 1]

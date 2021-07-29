@@ -1,24 +1,25 @@
-// const ifExecutor = require('./ifExecutor');
-// const whileExecutor = require('./whileExecutor');
-// const fnDefExecutor = require('./fnDefExecutor');
 import LineConsole from "../lineConsole";
 import FNode from "../FNode";
-import Environment, { extendEnvironment } from '../enviroment'
-import { executorYield, executorNext } from '../executer'
+import Environment from '../environment'
+import ifProcessorFunction from './if'
+import whileProcessorFunction from './while'
+import fnDefProcessorFunction from './fnDef'
 
-import ifExecutorFunction from './if'
-import whileExecutorFunction from './while'
-import fndefExecutorFunction from './fndef'
-import evaluate, { ERROR, ExternalMutationERROR } from "../evaluate";
+import evaluate from "../evaluate";
+import { ERROR, ExternalMutationERROR } from "../evaluate";
+import { extendEnvironment } from '../environment'
+import { processorYield, processorInput } from '../executer'
 
 
 
-export default function* statementBlockExecutor(body: FNode, environment: Environment, lineConsole: LineConsole)
-    : Generator<executorYield, void, executorNext> {
+
+
+export default function* statementBlockProcessor(body: FNode, environment: Environment, lineConsole: LineConsole)
+    : Generator<processorYield, void, processorInput> {
 
     let caughtError: ERROR | null = null;
     let isRetry = false;
-    let result: executorNext | null = null;
+    let result: processorInput | null = null;
     let internalMutation = false;
 
     do {
@@ -34,7 +35,7 @@ export default function* statementBlockExecutor(body: FNode, environment: Enviro
 
 
 
-        let localEnvironment = extendEnvironment(environment); //Every new try creates a new enviornment
+        let localEnvironment = extendEnvironment(environment); //Every new try creates a new environment
         try {
             for (let index = 0; index < body.children.length; index++) {
                 const mayBeStatement = body.children[index];
@@ -52,14 +53,14 @@ export default function* statementBlockExecutor(body: FNode, environment: Enviro
 
                             break;
                         case "ifStatement":
-                            yield* ifExecutorFunction(mayBeStatement, localEnvironment, lineConsole);
+                            yield* ifProcessorFunction(mayBeStatement, localEnvironment, lineConsole);
                             break;
                         case "whileStatement":
-                            yield* whileExecutorFunction(mayBeStatement, localEnvironment, lineConsole);
+                            yield* whileProcessorFunction(mayBeStatement, localEnvironment, lineConsole);
                             break;
 
                         case "functionDefStatement":
-                            yield* fndefExecutorFunction(mayBeStatement, localEnvironment, lineConsole);
+                            yield* fnDefProcessorFunction(mayBeStatement, localEnvironment, lineConsole);
                             break;
 
                         case "retryStatement":
@@ -74,7 +75,7 @@ export default function* statementBlockExecutor(body: FNode, environment: Enviro
 
 
                         default:
-                            throw "Unhandled statment"
+                            throw "Unhandled statement"
                             break;
                     }
 
@@ -94,7 +95,7 @@ export default function* statementBlockExecutor(body: FNode, environment: Enviro
             caughtError = error;
         }
 
-        let toYield: executorYield | null = null;
+        let toYield: processorYield | null = null;
         if (caughtError != null) {
             if (caughtError instanceof ExternalMutationERROR) {
                 if (caughtError.mutatedBlock != body)
@@ -143,7 +144,7 @@ export function patchError(error: FNode, type: string) {
 }
 
 
-export function patchErrorToEvent(error: ERROR | null): executorYield {
+export function patchErrorToEvent(error: ERROR | null): processorYield {
 
     if (!error)
         return {
