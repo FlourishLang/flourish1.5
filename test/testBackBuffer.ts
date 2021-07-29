@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import BackBuffer from '../src/backBuffer'
+import BackBuffer from '../src/backend/backBuffer'
 
 
 

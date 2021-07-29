@@ -1,7 +1,7 @@
-import evaluate from '../src/evaluate';
-import {createEnvironment,extendEnvironment} from '../src/enviroment';
+import evaluate from '../src/backend/evaluate';
+import {createEnvironment,extendEnvironment} from '../src/backend/enviroment';
 import assert from 'assert';
-import Parser from '../src/parser';
+import Parser from '../src/backend/parser';
 
 
 describe("Eval", () => {

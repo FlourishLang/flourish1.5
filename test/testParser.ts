@@ -1,4 +1,4 @@
-import Parser from '../src/parser';
+import Parser from '../src/backend/parser';
 
 var assert = require('assert');
 

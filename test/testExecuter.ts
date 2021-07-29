@@ -1,10 +1,10 @@
 
-import Executer from '../src/executer';
+import Executer from '../src/backend/executer';
 
-import LineConsole from '../src/lineConsole';
+import LineConsole from '../src/backend/lineConsole';
 
 import assert from 'assert';
-import Parser from '../src/parser';
+import Parser from '../src/backend/parser';
 let lineConsole = new LineConsole();
 
 

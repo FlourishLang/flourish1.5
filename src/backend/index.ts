@@ -11,7 +11,7 @@ const io = new Server(3000, {
   pingInterval: 60000,
   pingTimeout: 5000,
   cors: {
-    origin: "http://localhost:10001",
+    origin: "http://localhost:9000",
     methods: ["GET", "POST"]
   }
 });
