@@ -33,6 +33,7 @@ export default class LineConsole {
   getData() {
     return this.lines;
   }
+  
 }
 
 

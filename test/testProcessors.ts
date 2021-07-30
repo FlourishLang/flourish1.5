@@ -52,6 +52,61 @@ describe("Processor", () => {
 
     });
 
+
+
+    it('should process while statement', function () {
+
+
+        let code=`
+        let i 10
+        let sum 0
+        while (i>0)):
+            reset sum (sum + i)
+            reset i (i - 1)
+        end
+        print sum
+        `
+        let parser = new Parser(code);
+        let lineConsole = new LineConsole();
+        let executer = new Executer(parser.getTree(), lineConsole);
+        executer.execute({ type: "start" })
+        assert.deepStrictEqual(lineConsole.getData()["7"].message,10+9+8+7+6+5+4+3+2+1);
+
+
+
+    });
+
+
+
+    it('should process fnDef statement', function () {
+
+
+        let code=`
+        def [min i:34 j:11]:
+            if(i<j):
+                return i
+            else:
+                return j
+            end
+        end
+        min 12 22
+        min 20 21
+        `
+        let parser = new Parser(code);
+        let lineConsole = new LineConsole();
+        let executer = new Executer(parser.getTree(), lineConsole);
+        executer.execute({ type: "start" })
+        assert.deepStrictEqual(lineConsole.getData()["8"].message,Math.min(12,22));
+        assert.deepStrictEqual(lineConsole.getData()["9"].message,Math.min(20,21));
+
+
+
+    });
+
+
+
+    
+
     it('should process if else statement', function () {
 
 
