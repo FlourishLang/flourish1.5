@@ -75,7 +75,8 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
 
 
                         default:
-                            throw "Unhandled statement"
+
+                            throw ERROR.fromAst(mayBeStatement, 'Unhandled statement')
                             break;
                     }
 

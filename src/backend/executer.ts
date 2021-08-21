@@ -195,11 +195,11 @@ function* mainProcessorFunction(tree: FNode, lineConsole: LineConsole): Generato
 
             yield* statementBlockProcessor(tree.children[0], createEnvironment(), lineConsole);
             if (tree.children.length == 2 && tree.children[1].type == "ERROR")
-                throw patchError(tree.children[1], "statementError");
+                return patchErrorToEvent(patchError(tree.children[1], "statementError"));
         } catch (error) {
             if (error instanceof ExternalMutationERROR)
                 continue;
-            else throw error
+            else throw(error);
         }
 
         break;
