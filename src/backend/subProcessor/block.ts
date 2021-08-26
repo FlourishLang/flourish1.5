@@ -4,6 +4,7 @@ import Environment from '../environment'
 import ifProcessorFunction from './if'
 import whileProcessorFunction from './while'
 import fnDefProcessorFunction from './fnDef'
+import classDefProcessorFunction from './classDef'
 
 import evaluate from "../evaluate";
 import { ERROR, ExternalMutationERROR } from "../evaluate";
@@ -62,6 +63,10 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
                         case "functionDefStatement":
                             yield* fnDefProcessorFunction(mayBeStatement, localEnvironment, lineConsole);
                             break;
+                        case "classDefStatement":
+                            yield* classDefProcessorFunction(mayBeStatement, localEnvironment, lineConsole);
+                            break;
+
 
                         case "retryStatement":
 
@@ -75,7 +80,7 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
 
 
                         default:
-
+                            debugger;
                             throw ERROR.fromAst(mayBeStatement, 'Unhandled statement')
                             break;
                     }

@@ -96,6 +96,7 @@
 
         case "end":
         case "def":
+        case "class":
         case "if":case "while":case "else":
         case ":":
           CodeMirror.treeZipperMoveNext();

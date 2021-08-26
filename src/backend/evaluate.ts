@@ -80,6 +80,43 @@ export let specialEnv: { [name: string]: any } = {
         }
 
     },
+    'setThis': function* (args: FNode[], env: Environment): any {
+
+        if (args.length != 2) {
+            if (args.length) {
+                throw new ERROR(`Mismatching no of argument for set, got ${args.length} expected 2`,
+                    args[0].startPosition, args[args.length - 1].endPosition);
+            } else {
+                throw new ERROR(`Mismatching no of argument for set, got ${args.length} expected 2`)
+            }
+        }
+
+
+
+        let identifier = args[0].children[0].leafText;
+        if (args[0].children[0].type !== "identifier") {
+            throw ERROR.fromAst(args[0].children[0], `identifier expected found ${args[0].children[0].type}`);
+        }
+
+        if (env.getItem('___THIS___')) {
+            let thisEnv = env.getItem('___THIS___') as Environment;
+            let res = yield* evaluate(args[1], env);
+            thisEnv.setItem(identifier, res);
+            return res;
+        } else {
+            throw ERROR.fromAst(args[0], `Undefined this environment`);
+        }
+
+        // if (!env.hasItem(identifier)) {
+        //     let res = yield* evaluate(args[1], env);
+        //     env.setItem(identifier, res);
+        //     return res;
+
+        // } else {
+        //     throw ERROR.fromAst(args[0].children[0], `Can't reset identifier: ${identifier}`);
+        // }
+
+    },
 
     'reset': function* (args: FNode[], env: Environment): any {
 
@@ -201,7 +238,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
                     try {
                         return yield* specialCmd(cmdArguments, env);
                     } catch (error) {
-                        if (!error.hasValidPosition()) {
+                        if (error.hasValidPosition && !error.hasValidPosition()) {
 
                             error = ERROR.fromAst(ast, error.message);
                         }
@@ -300,7 +337,8 @@ export default function* evaluate(ast: FNode, env: Environment): any {
 
 
         default:
-            throw ("Cannot evaluate:" + ast.type);
+            
+            throw ERROR.fromAst(ast,"Cannot evaluate:" + ast.type);
             break;
     }
 }
