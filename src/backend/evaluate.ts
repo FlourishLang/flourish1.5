@@ -151,15 +151,33 @@ export let specialEnv: { [name: string]: any } = {
 
     },
     'get': function get(arg: FNode, env: Environment): any {
-        let identifier = arg.leafText;
-        let value = env.getItem(identifier);
+
+        if (arg.type == "identifier") {
+
+            let identifier = arg.leafText;
+            let value = env.getItem(identifier);
 
 
-        if (value === undefined) {
-            throw ERROR.fromAst(arg, `Can't find identifier: ${identifier}`);
+            if (value === undefined) {
+                throw ERROR.fromAst(arg, `Can't find identifier: ${identifier}`);
 
-        } else {
-            return value;
+            } else {
+                return value;
+            }
+        }else{
+
+            if(!arg.children)
+                throw ERROR.fromAst(arg, `Can't find children`);
+
+
+            let object = env.getItem(arg.children[0].leafText);
+            if (object === undefined) {
+                throw ERROR.fromAst(arg, `Can't find object: ${arg.children[0].leafText}`);
+
+            } else {
+                let objectEnv = object as Environment;
+                return get(arg.children[2],objectEnv);
+            }
         }
 
     },
@@ -304,6 +322,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
         }
 
         case "identifier":
+        case "attributelist":
             if (specialEnv[ast.leafText])
                 return specialEnv[ast.leafText];
             return specialEnv.get(ast, env);
@@ -312,21 +331,21 @@ export default function* evaluate(ast: FNode, env: Environment): any {
             return yield* evaluate(ast.children[0], env);
 
         case "+":
-            return specialEnv.get({ leafText: "add" }, env);
+            return specialEnv.get({ leafText: "add" ,type:"identifier"}, env);
         case "-":
-            return specialEnv.get({ leafText: "subtract" }, env);
+            return specialEnv.get({ leafText: "subtract" ,type:"identifier"}, env);
         case "*":
-            return specialEnv.get({ leafText: "multiply" }, env);
+            return specialEnv.get({ leafText: "multiply" ,type:"identifier"}, env);
         case "%":
-            return specialEnv.get({ leafText: "mod" }, env);
+            return specialEnv.get({ leafText: "mod" ,type:"identifier"}, env);
         case "/":
-            return specialEnv.get({ leafText: "divide" }, env);
+            return specialEnv.get({ leafText: "divide" ,type:"identifier"}, env);
         case "=":
-            return specialEnv.get({ leafText: "equals" }, env);
+            return specialEnv.get({ leafText: "equals" ,type:"identifier"}, env);
         case "<":
-            return specialEnv.get({ leafText: "isLesser" }, env);
+            return specialEnv.get({ leafText: "isLesser" ,type:"identifier"}, env);
         case ">":
-            return specialEnv.get({ leafText: "isGreater" }, env);
+            return specialEnv.get({ leafText: "isGreater" ,type:"identifier"}, env);
 
         case "number":
             return parseInt(ast.leafText);
@@ -337,8 +356,8 @@ export default function* evaluate(ast: FNode, env: Environment): any {
 
 
         default:
-            
-            throw ERROR.fromAst(ast,"Cannot evaluate:" + ast.type);
+
+            throw ERROR.fromAst(ast, "Cannot evaluate:" + ast.type);
             break;
     }
 }
