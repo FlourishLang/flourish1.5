@@ -35,11 +35,11 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
         }
 
 
-
+        let mayBeStatement: FNode;
         let localEnvironment = extendEnvironment(environment); //Every new try creates a new environment
         try {
             for (let index = 0; index < body.children.length; index++) {
-                const mayBeStatement = body.children[index];
+                mayBeStatement = body.children[index];
                 if (mayBeStatement.type == 'statement') {
                     let result = null;
 
@@ -96,7 +96,6 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
             }
 
         } catch (error) {
-
             console.log(error);
             caughtError = error;
         }
@@ -107,8 +106,13 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
                 if (caughtError.mutatedBlock != body)
                     throw caughtError;
             }
-            else
+            else {
+                if (!(caughtError instanceof ERROR)) {
+                    caughtError = ERROR.fromAst(mayBeStatement, `Internal error:${(caughtError as any).message}`)
+                }
                 toYield = { type: "ERROR", error: caughtError, activeBlock: body }
+            }
+
         } else if (body.isDesiredActiveBlock) {
             toYield = { type: "isDesiredActiveBlock", error: null, activeBlock: body }
         }
