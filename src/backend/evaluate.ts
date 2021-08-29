@@ -72,7 +72,10 @@ export let specialEnv: { [name: string]: any } = {
 
         if (!env.hasItem(identifier)) {
             let res = yield* evaluate(args[1], env);
+            if (res == null)
+                throw ERROR.fromAst(args[1], `Cannot set null value from expression `);
             env.setItem(identifier, res);
+
             return res;
 
         } else {
@@ -195,6 +198,9 @@ export let specialEnv: { [name: string]: any } = {
 
     },
     'return': function* (result: any, env: Environment) {
+        if (!result.length)
+            return null;
+
         let matchingEnv = env.getMatchingEnv("___RETURN___");
 
         if (matchingEnv == undefined) {
