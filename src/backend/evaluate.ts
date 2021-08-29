@@ -167,9 +167,9 @@ export let specialEnv: { [name: string]: any } = {
             } else {
                 return value;
             }
-        }else{
+        } else {
 
-            if(!arg.children)
+            if (!arg.children)
                 throw ERROR.fromAst(arg, `Can't find children`);
 
 
@@ -179,7 +179,7 @@ export let specialEnv: { [name: string]: any } = {
 
             } else {
                 let objectEnv = object as Environment;
-                return get(arg.children[2],objectEnv);
+                return get(arg.children[2], objectEnv);
             }
         }
 
@@ -337,21 +337,21 @@ export default function* evaluate(ast: FNode, env: Environment): any {
             return yield* evaluate(ast.children[0], env);
 
         case "+":
-            return specialEnv.get({ leafText: "add" ,type:"identifier"}, env);
+            return specialEnv.get({ leafText: "add", type: "identifier" }, env);
         case "-":
-            return specialEnv.get({ leafText: "subtract" ,type:"identifier"}, env);
+            return specialEnv.get({ leafText: "subtract", type: "identifier" }, env);
         case "*":
-            return specialEnv.get({ leafText: "multiply" ,type:"identifier"}, env);
+            return specialEnv.get({ leafText: "multiply", type: "identifier" }, env);
         case "%":
-            return specialEnv.get({ leafText: "mod" ,type:"identifier"}, env);
+            return specialEnv.get({ leafText: "mod", type: "identifier" }, env);
         case "/":
-            return specialEnv.get({ leafText: "divide" ,type:"identifier"}, env);
+            return specialEnv.get({ leafText: "divide", type: "identifier" }, env);
         case "=":
-            return specialEnv.get({ leafText: "equals" ,type:"identifier"}, env);
+            return specialEnv.get({ leafText: "equals", type: "identifier" }, env);
         case "<":
-            return specialEnv.get({ leafText: "isLesser" ,type:"identifier"}, env);
+            return specialEnv.get({ leafText: "isLesser", type: "identifier" }, env);
         case ">":
-            return specialEnv.get({ leafText: "isGreater" ,type:"identifier"}, env);
+            return specialEnv.get({ leafText: "isGreater", type: "identifier" }, env);
 
         case "number":
             return parseInt(ast.leafText);
