@@ -26,7 +26,7 @@
     }
 
 
-    let keywordlist = ["let", "reset", "if", "print", "else", "retry","while","def","class"]
+    let keywordlist = ["let", "reset", "if", "print", "else", "retry","while","def","class","setThis"]
     keywordlist = keywordlist.map(i=>i+' ');
 
     function flourishHint(codemirror, options) {
