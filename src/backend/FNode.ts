@@ -106,8 +106,6 @@ function isEqualNode(first: TSTree, next: TSTree, fNode: FNode): boolean {
 
 
     if (first.childCount == 0) {
-        // debugger
-        // console.log("Leaf", first.text, first)
         return false;
     }
 

@@ -27,6 +27,10 @@ export default class BackBuffer {
 
   }
 
+  getText(){
+    return this.text;
+  }
+
 
   treeEditForEditorChange(change: codeMirrorChange, startIndex: number) {
     const oldLineCount = change.removed.length;

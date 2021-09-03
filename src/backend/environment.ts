@@ -117,6 +117,12 @@ export function createEnvironment() {
     return extendEnvironment(getBuiltInEnv());
 }
 
+
+export function createEmptyEnvironment() {
+    return extendEnvironment(getBuiltInEnv());
+}
+
+
 export function extendEnvironment(base: Environment) {
     let env = new Environment();
     env.setSuperEnvironment(base);

@@ -1,7 +1,7 @@
 {
   "restartable": "rs",
   "signal": "SIGHUP",
-  "ignore": [".git", "node_modules/", "dist/", "coverage/"],
+  "ignore": [".git", "node_modules/", "dist/", "coverage/","src/backend/packages"],
   "watch": ["src/"],
   "execMap": {
     "ts": "node -r ts-node/register"

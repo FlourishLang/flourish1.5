@@ -4,6 +4,8 @@ import LineConsole from "./lineConsole";
 import Parser, { FNodeTree } from './parser';
 import Executer from './executer';
 import FNode from "./FNode";
+import fs from "fs";
+import debounce from "debounce";
 
 
 
@@ -83,12 +85,22 @@ io.on('connection', socket => {
   let outTree: FNodeTree | null = null;
   let backBuffer: BackBuffer | null = null;
   let lineConsole: LineConsole | null = null;
+
+
+
+  function saveBuffer(name: string) {
+    fs.writeFile(`./src/backend/packages/${name}.flourish`, backBuffer.getText(), () => {
+      console.log(`./src/backend/packages/${name}.flourish`);
+    })
+  }
+
+
   socket.on('parse', sourceCode => {
     parser = new Parser(sourceCode);
     outTree = parser.getTree();
     backBuffer = new BackBuffer(sourceCode);
     lineConsole = new LineConsole();
-    executer = new Executer(parser.getTree(), lineConsole);
+    executer = new Executer(parser.getTree(), lineConsole, { "___writeToFile": debounce(saveBuffer, 1000) });
     let result = executer.execute({ type: "start" })
 
     let finalOutTree = patchTree(outTree, result, executer, null, lineConsole);
@@ -109,7 +121,6 @@ io.on('connection', socket => {
 
     socket.emit('parseComplete', finalOutTree);
     lineConsole!.clear();
-
   });
 
 
@@ -129,7 +140,7 @@ io.on('connection', socket => {
 
     let tree = parser!.getTree();
 
-    let result = executer!.execute({ type:"queryEnv"})
+    let result = executer!.execute({ type: "queryEnv" })
     let finalTree = patchTree(tree, result, executer!, null, lineConsole!);
     socket.emit('requestEnvGot', finalTree);
 
