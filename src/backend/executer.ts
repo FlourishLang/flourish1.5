@@ -27,6 +27,8 @@ export interface processorInput {
 
 export type processorType = Generator<processorYield, void, processorInput>;
 
+type ExternalEnvironment = { [name:string]:any};
+
 export default class Executer {
 
     needToReset: boolean;
@@ -34,7 +36,7 @@ export default class Executer {
     desiredActiveBlock: FNode | null;
     processor: processorType;
 
-    constructor(private tree: FNodeTree, private lineConsole: LineConsole) {
+    constructor(private tree: FNodeTree, private lineConsole: LineConsole,readonly externalEnvironment:ExternalEnvironment) {
         this.desiredActiveBlock = null; //Block where execution cycle supposed to run
         this.activeBlock = null;
         this.needToReset = false;
@@ -139,7 +141,7 @@ export default class Executer {
 
 
     reset() {
-        return mainProcessorFunction(this.tree.root, this.lineConsole);
+        return mainProcessorFunction(this.tree.root, this.lineConsole,this.externalEnvironment);
 
     }
 
@@ -177,13 +179,16 @@ export default class Executer {
 
 
 
+
+
+
 }
 
 
 
 
 
-function* mainProcessorFunction(tree: FNode, lineConsole: LineConsole): Generator<processorYield, any, processorInput> {
+function* mainProcessorFunction(tree: FNode, lineConsole: LineConsole,externalEnvironment:ExternalEnvironment): Generator<processorYield, any, processorInput> {
 
     do {
 
@@ -192,8 +197,12 @@ function* mainProcessorFunction(tree: FNode, lineConsole: LineConsole): Generato
             if (tree.type == "ERROR") {
                 return patchErrorToEvent(patchError(tree, "statementError"))
             };
+            let baseEnvironment= createEnvironment();
+            for (const key in externalEnvironment) {
+                baseEnvironment.setItem(key,externalEnvironment[key]);
+            }
 
-            yield* statementBlockProcessor(tree.children[0], createEnvironment(), lineConsole);
+            yield* statementBlockProcessor(tree.children[0],baseEnvironment , lineConsole);
             if (tree.children.length == 2 && tree.children[1].type == "ERROR")
                 return patchErrorToEvent(patchError(tree.children[1], "statementError"));
         } catch (error) {

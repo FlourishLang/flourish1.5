@@ -122,7 +122,6 @@ export let specialEnv: { [name: string]: any } = {
     },
 
     'reset': function* (args: FNode[], env: Environment): any {
-
         if (args.length != 2) {
             if (args.length) {
                 throw new ERROR(`Mismatching no of argument for reset(${args.length}) expected 2`,
@@ -156,6 +155,7 @@ export let specialEnv: { [name: string]: any } = {
     'get': function get(arg: FNode, env: Environment): any {
 
         if (arg.type == "identifier") {
+
 
             let identifier = arg.leafText;
             let value = env.getItem(identifier);
@@ -214,6 +214,16 @@ export let specialEnv: { [name: string]: any } = {
         }
 
     },
+
+    'defPackage': function* (result: FNode[], env: Environment) {
+        if (!result.length)
+            throw `Package name missing`;
+
+            let writeToFile = env.getItem("___writeToFile");
+            writeToFile(result[0].children[0].leafText);
+
+    },
+
 
 
 
@@ -292,7 +302,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
                         evaluatedArguments.push(argEvalResult);
                     }
                     try {
-                        return yield* cmd.call(null, evaluatedArguments, env)
+                        return yield* cmd.call(null, evaluatedArguments, env,ast.children[0])
                     } catch (error) {
                         throw ERROR.fromAst(ast, `Internal Exception: ${error.message}`);
 

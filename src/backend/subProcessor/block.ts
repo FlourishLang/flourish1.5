@@ -114,7 +114,9 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
                     throw caughtError;
             }
             else {
-                if (!(caughtError instanceof ERROR)) {
+                if(typeof(caughtError) == 'string') {
+                    caughtError = ERROR.fromAst(mayBeStatement, `Internal error:${caughtError}`)
+                }else if (!(caughtError instanceof ERROR)) {
                     caughtError = ERROR.fromAst(mayBeStatement, `Internal error:${(caughtError as any).message}`)
                 }
                 toYield = { type: "ERROR", error: caughtError, activeBlock: body }
