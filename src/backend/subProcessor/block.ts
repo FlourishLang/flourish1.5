@@ -10,7 +10,7 @@ import {methodDefProcessorFunction} from './classDef'
 
 import evaluate from "../evaluate";
 import { ERROR, ExternalMutationERROR } from "../evaluate";
-import { extendEnvironment } from '../environment'
+import { extendEnvironment, printEnvironment } from '../environment'
 import { processorYield, processorInput } from '../executer'
 
 
@@ -52,6 +52,7 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
                     switch (mayBeStatement.children[0].type) {
                         case "expression":
                             result = yield* evaluate(mayBeStatement.children[0], localEnvironment);
+                            result = (result instanceof Environment) ? printEnvironment(result) : result;
                             lineConsole.log(mayBeStatement.startPosition.row, result);
 
                             break;

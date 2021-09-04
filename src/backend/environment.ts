@@ -128,3 +128,15 @@ export function extendEnvironment(base: Environment) {
     env.setSuperEnvironment(base);
     return env;
 }
+
+export function printEnvironment(environment: Environment): string {
+    let ret = "{"
+    Object.keys(environment.dict).forEach(key => {
+        ret += key;
+        ret += ":";
+        ret += environment.dict[key];
+        ret += " ";
+    });
+    ret += "}";
+    return ret;
+}
