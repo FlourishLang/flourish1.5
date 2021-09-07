@@ -5,7 +5,7 @@ import ifProcessorFunction from './if'
 import whileProcessorFunction from './while'
 import fnDefProcessorFunction from './fnDef'
 import classDefProcessorFunction from './classDef'
-import {methodDefProcessorFunction} from './classDef'
+import { methodDefProcessorFunction } from './classDef'
 
 
 import evaluate from "../evaluate";
@@ -25,6 +25,16 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
     let result: processorInput | null = null;
     let internalMutation = false;
 
+    let  exportEnv = null;
+    if (environment.getItem('___export_env') ) {
+        exportEnv = environment.getItem('___export_env');
+        environment.setItem('___export_env',null);
+    }
+
+
+
+    let localEnvironment;
+
     do {
 
         caughtError = null;
@@ -38,7 +48,7 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
 
 
         let mayBeStatement: FNode;
-        let localEnvironment = extendEnvironment(environment); //Every new try creates a new environment
+        localEnvironment = extendEnvironment(environment); //Every new try creates a new environment
         try {
             for (let index = 0; index < body.children.length; index++) {
                 mayBeStatement = body.children[index];
@@ -115,9 +125,9 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
                     throw caughtError;
             }
             else {
-                if(typeof(caughtError) == 'string') {
+                if (typeof (caughtError) == 'string') {
                     caughtError = ERROR.fromAst(mayBeStatement, `Internal error:${caughtError}`)
-                }else if (!(caughtError instanceof ERROR)) {
+                } else if (!(caughtError instanceof ERROR)) {
                     caughtError = ERROR.fromAst(mayBeStatement, `Internal error:${(caughtError as any).message}`)
                 }
                 toYield = { type: "ERROR", error: caughtError, activeBlock: body }
@@ -148,8 +158,9 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
         isRetry = true;
     } while (caughtError != null || body.isDesiredActiveBlock || internalMutation);
 
-
-
+    if (exportEnv) {
+        exportEnv(localEnvironment);
+    }
 
 }
 

@@ -13,8 +13,10 @@ export default class LineConsole {
     this.clear();
   }
 
-  log(linecount: number, message: string) {
-    this.lines[linecount] = { message: message, type: "result" };
+  log(lineCount: number, message: string) {
+
+    this.lines[lineCount] = { message: message, type: "result" };
+    
   }
 
   logRange(lineBegin: number, lineEnd: number, data: LineData) {

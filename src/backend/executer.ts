@@ -14,7 +14,7 @@ export interface processorYield {
 
 
 export interface executorInput {
-    type: "start" | "Mutate" | "switchActiveLine" | "queryEnv"
+    type: "start" | "Mutate" | "switchActiveLine" | "queryEnv"|"batch"
     mutatedBlock?: FNode | null;
 }
 
@@ -36,7 +36,7 @@ export default class Executer {
     desiredActiveBlock: FNode | null;
     processor: processorType;
 
-    constructor(private tree: FNodeTree, private lineConsole: LineConsole,readonly externalEnvironment:ExternalEnvironment) {
+    constructor(private tree: FNodeTree, private lineConsole: LineConsole,readonly externalEnvironment?:ExternalEnvironment) {
         this.desiredActiveBlock = null; //Block where execution cycle supposed to run
         this.activeBlock = null;
         this.needToReset = false;
@@ -65,6 +65,9 @@ export default class Executer {
         }
 
         switch (input.type) {
+            case "batch":
+                    this.switchDesiredActiveBlock(null);
+                break;
             case "start":
                 if (this.tree.root.children[0]) {
                     this.switchDesiredActiveBlock(this.tree.root.children[0])
@@ -198,9 +201,12 @@ function* mainProcessorFunction(tree: FNode, lineConsole: LineConsole,externalEn
                 return patchErrorToEvent(patchError(tree, "statementError"))
             };
             let baseEnvironment= createEnvironment();
-            for (const key in externalEnvironment) {
-                baseEnvironment.setItem(key,externalEnvironment[key]);
+            if (externalEnvironment) {
+                for (const key in externalEnvironment) {
+                    baseEnvironment.setItem(key,externalEnvironment[key]);
+                }    
             }
+            
 
             yield* statementBlockProcessor(tree.children[0],baseEnvironment , lineConsole);
             if (tree.children.length == 2 && tree.children[1].type == "ERROR")

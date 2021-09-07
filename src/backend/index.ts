@@ -90,8 +90,13 @@ io.on('connection', socket => {
 
   function saveBuffer(name: string) {
     fs.writeFile(`./src/backend/packages/${name}.flourish`, backBuffer.getText(), () => {
-      console.log(`./src/backend/packages/${name}.flourish`);
+      console.log(`Saved ./src/backend/packages/${name}.flourish`);
     })
+  }
+
+  function loadBuffer(name: string) {
+      let result = fs.readFileSync(`./src/backend/packages/${name}.flourish`, { encoding: "utf8" })
+      return result;
   }
 
 
@@ -100,7 +105,10 @@ io.on('connection', socket => {
     outTree = parser.getTree();
     backBuffer = new BackBuffer(sourceCode);
     lineConsole = new LineConsole();
-    executer = new Executer(parser.getTree(), lineConsole, { "___writeToFile": debounce(saveBuffer, 1000) });
+    executer = new Executer(parser.getTree(), lineConsole, {
+      "___writeToFile": debounce(saveBuffer, 1000),
+      "___readFromFile": loadBuffer
+    });
     let result = executer.execute({ type: "start" })
 
     let finalOutTree = patchTree(outTree, result, executer, null, lineConsole);

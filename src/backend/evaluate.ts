@@ -1,5 +1,6 @@
 import FNode, { FNodePoint } from "./FNode";
 import Environment from "./environment";
+import { defPackage, importPackage } from "./packageSupport";
 
 
 
@@ -215,14 +216,8 @@ export let specialEnv: { [name: string]: any } = {
 
     },
 
-    'defPackage': function* (result: FNode[], env: Environment) {
-        if (!result.length)
-            throw `Package name missing`;
-
-            let writeToFile = env.getItem("___writeToFile");
-            writeToFile(result[0].children[0].leafText);
-
-    },
+    'defPackage': defPackage,
+    'import': importPackage,
 
 
 
@@ -302,7 +297,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
                         evaluatedArguments.push(argEvalResult);
                     }
                     try {
-                        return yield* cmd.call(null, evaluatedArguments, env,ast.children[0])
+                        return yield* cmd.call(null, evaluatedArguments, env, ast.children[0])
                     } catch (error) {
                         throw ERROR.fromAst(ast, `Internal Exception: ${error.message}`);
 
