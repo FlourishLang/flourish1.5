@@ -4,7 +4,9 @@
 
 
 function createMethod(fun: any) {
-    return function* (args: any[],) {
+    return function* (args: any[]) {
+        if(args.find(item=>typeof(item)!="number"))
+            throw new Error("Invalid type for operator")
         let result = fun.apply(null, args);
         return result;
     }
