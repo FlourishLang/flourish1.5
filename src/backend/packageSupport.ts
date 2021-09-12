@@ -16,6 +16,61 @@ export function* defPackage(result: FNode[], env: Environment) {
 
 }
 
+function canonicalizeEnvironment(env: any) {
+
+
+    function canonicalizeParent(env: Environment) {
+
+        let environment = env as Environment;
+
+        let parentEnvironment = environment.superEnvironment;
+        let newParentEnv = {};
+        for (const key in parentEnvironment.dict) {
+            if (Object.prototype.hasOwnProperty.call(parentEnvironment.dict, key)) {
+                const element = parentEnvironment.dict[key];
+                if (typeof (element) == 'function' && element.name == 'method') {
+
+                    function* wrapperGeneratorMethod() {
+                        let iter = element.apply(null, arguments);
+                        let result = iter.next();
+                        if (result.done == true && result.value.type != "error") {
+                            return canonicalizeParent(result.value);
+                        }
+                        else throw "Package internal error" + result.value.error.message;
+
+                    }
+                    newParentEnv[key] = wrapperGeneratorMethod;
+
+                }
+            }
+        }
+        
+        Object.assign(parentEnvironment.dict,newParentEnv);
+
+        return environment;
+    }
+
+
+
+    function* wrapperGeneratorClassConstructor() {
+
+        let iter = env.apply(null, arguments);
+        let result = iter.next();
+        if (result.done == true && result.value.type != "error") {
+            return canonicalizeParent(result.value);
+        }
+        else throw "Package internal error" + result.value.error.message;
+
+
+
+    }
+    if (env.name == "classConstructor") {
+        return wrapperGeneratorClassConstructor;
+    }
+
+
+}
+
 
 
 function fetchPackage(packageName: string, env: Environment): any {
@@ -68,7 +123,7 @@ export function* importPackage(args: FNode[], env: Environment) {
     let exportedEnv = getPossibleCachedPackage(packageName, env);
 
     if (exportedEnv) {
-        env.setItem(packageName, exportedEnv.getItem(packageName))
+        env.setItem(packageName, canonicalizeEnvironment(exportedEnv.getItem(packageName)))
     } else {
         throw "Failed to import package";
     }

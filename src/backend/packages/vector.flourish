@@ -3,13 +3,19 @@ class [ vector x : 2 y : 0 z : 3 ] :
   setThis x x
   setThis y y
   setThis z z
+  if [= y 101] :
+    
+    setThis y
+    
+  end
+  
 end
 
 
 
 
 
-defMethod [ vector . add that : [vector 1 1 1] ] :
+defMethod [ vector . add that : [vector 1 0 1] ] :
   return [vector (this . x + that . x) (this . y + that . y) (this . x + that . z)]
 end
 
@@ -19,7 +25,6 @@ end
 
 
 let temp [vector 10 2 3]
-reset temp [temp . subtract [vector 7 3 3]]
 
 print temp . x
 
