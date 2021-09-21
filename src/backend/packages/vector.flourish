@@ -15,16 +15,14 @@ end
 
 
 
-defMethod [ vector . add that : [vector 1 0 1] ] :
-  return [vector (this . x + that . x) (this . y + that . y) (this . x + that . z)]
-end
-
 defMethod [ vector . subtract that : [vector 1 1 1] ] :
-  return [vector (this . x - that . x) (this . y - that . y) (this . x - that . z)]
+  
+  return [vector (this . x - that . x) (this . y - that . y) (this . z - that . z)]
 end
 
 
-let temp ([vector 10 2 3] + [vector 10 2 3])
+
+let temp ([vector 10 2 3] - [vector 10 21 31])
 
 print temp . x
 
