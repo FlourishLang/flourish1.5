@@ -131,7 +131,7 @@ export function createEnvironment() {
 
 
 export function createEmptyEnvironment() {
-    return extendEnvironment(getBuiltInEnv());
+    return extendEnvironment(null);
 }
 
 
