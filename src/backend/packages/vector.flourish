@@ -24,7 +24,7 @@ defMethod [ vector . subtract that : [vector 1 1 1] ] :
 end
 
 
-let temp [vector 10 2 3]
+let temp ([vector 10 2 3] + [vector 10 2 3])
 
 print temp . x
 

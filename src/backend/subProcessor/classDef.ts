@@ -93,13 +93,23 @@ function getAttributeBase(list: FNode[]) {
 
 
 function createMethod(body: FNode, parameters: FNode, environment: Environment, lineConsole: LineConsole) {
-    return function* method(argumentsArray: any[], outerEnvironment: Environment, callerNode: FNode) {
+    return function* method(argumentsArray: any[], outerEnvironment: Environment, callerNode: FNode, callerEnvironment: any) {
 
-        let attributeListRef = callerNode.children[0];
-        let { start: objectIdentifier, end: identifierRef } = getAttributeBase(attributeListRef.children);
+        let thisEnvironment = null;
+        if (callerEnvironment) {
+            thisEnvironment = callerEnvironment;
+            argumentsArray.shift();
+        }
+        else {
+            let attributeListRef = callerNode.children[0];
+            let { start: objectIdentifier, end: identifierRef } = getAttributeBase(attributeListRef.children);
+            thisEnvironment = outerEnvironment.getItem(objectIdentifier.leafText);
+        }
+
+
 
         let paramEnvironment = extendEnvironment(outerEnvironment); //Every new try creates a new environment
-        let thisEnvironment = outerEnvironment.getItem(objectIdentifier.leafText);
+
         paramEnvironment.setItem("___THIS___", thisEnvironment);
         paramEnvironment.setItem("this", thisEnvironment);
 
