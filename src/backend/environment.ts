@@ -30,6 +30,10 @@ function commutativeMethod(fun: any, name: string) {
 
 function translativeMethod(fun: any, name: string) {
     return function* (args: any[], outEnv: Environment, node: any) {
+        if (args.length<2) {
+            throw new Error("More than one argument expected")
+
+        }
         if (args.find(item => typeof (item) != "number")) {
             if (args[0].constructor.name == 'Environment') {
                 let method = args[0].getItem(name)
