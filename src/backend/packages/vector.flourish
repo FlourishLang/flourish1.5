@@ -1,4 +1,9 @@
 
+
+print [+ 1 2 3]
+print [> 3 2 12]
+
+
 class [ vector x : 2 y : 0 z : 3 ] :
   setThis x x
   setThis y y
@@ -13,18 +18,20 @@ end
 
 
 
+defMethod [ vector . add that : [vector 1 1 1] ] :
+  return [vector (this . x + that . x) (this . y + that . y) (this . z + that . z)]
+end
 
 
 defMethod [ vector . subtract that : [vector 1 1 1] ] :
-  
   return [vector (this . x - that . x) (this . y - that . y) (this . z - that . z)]
 end
 
 
-
-let temp ([vector 10 2 3] - [vector 10 21 31])
+let temp [+ [vector 10 2 3] [vector 10 2 3] [vector 10 2 3]]
 
 print temp . x
+
 
 
 
