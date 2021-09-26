@@ -23,6 +23,11 @@ defMethod [ vector . add that : [vector 1 1 1] ] :
 end
 
 
+defMethod [ vector . multiply factor : 5 ] :
+
+  return [vector (this . x * factor) (this . y * factor) (this . z * factor)]
+end
+
 defMethod [ vector . subtract that : [vector 1 1 1] ] :
   return [vector (this . x - that . x) (this . y - that . y) (this . z - that . z)]
 end
