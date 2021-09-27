@@ -1,5 +1,6 @@
 
 // import evaluate from "./evaluate";
+import { arrayCreate } from "./arraySupport";
 
 
 
@@ -157,6 +158,7 @@ let builtInEnvDict = {
     'isLesser': translativeMethod(function () {
         return arguments[0] < arguments[1];
     }, 'isLesser'),
+    'Array': arrayCreate,
 
 
 };

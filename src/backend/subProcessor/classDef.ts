@@ -77,7 +77,7 @@ export default function* classDefProcessorFunction(tree: FNode, environment: Env
 
 
 
-function getAttributeBase(list: FNode[]) {
+export function getAttributeBase(list: FNode[]) {
     let end = list[list.length - 1];
     let start: FNode;
 
