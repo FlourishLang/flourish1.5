@@ -15,4 +15,4 @@ However, as the computers got more and more complex complete simulation required
 With Flourish we plan to avoid the simulation required to write the programs, rather see the instantaneous result and refine as we go. So the won't be a single instance of where we write the code and wait to see if executed perfectly. This means a lot of our favorite means of programming need to be revisited...
 
 ## WIP screen cast
-images/samplePlay.mov
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/QEvUtLPW7ro/0.jpg)](https://www.youtube.com/watch?v=QEvUtLPW7ro)
