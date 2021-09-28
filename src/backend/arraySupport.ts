@@ -49,6 +49,7 @@ export function* arrayCreate(argumentsArray: any[]) {
     let reference = argumentsArray[1];
     let ret = new Array(length);
     ret.fill(reference, 0, length);
+    arrayEnv.setItem('length', length);
     arrayEnv.setItem('internalData', ret);
     arrayEnv.setItem('internalReference', reference);
 
