@@ -44,7 +44,7 @@
     "least-common-ancestor": "^1.0.0",
     "socket.io": "^4.1.3",
     "tree-sitter": "^0.16.2",
-    "tree-sitter-flourish": "file:../tree-sitter-flourish",
+    "tree-sitter-flourish": "^0.8.0",
     "ts-node": "^10.1.0"
   }
 }
