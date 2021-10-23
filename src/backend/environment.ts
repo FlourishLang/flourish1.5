@@ -1,5 +1,6 @@
 
 // import evaluate from "./evaluate";
+import { arrayCreate } from "./arraySupport";
 
 
 
@@ -30,7 +31,7 @@ function commutativeMethod(fun: any, name: string) {
 
 function translativeMethod(fun: any, name: string) {
     return function* (args: any[], outEnv: Environment, node: any) {
-        if (args.length<2) {
+        if (args.length < 2) {
             throw new Error("More than one argument expected")
 
         }
@@ -54,9 +55,9 @@ function translativeMethod(fun: any, name: string) {
         }
 
         let first = args[0];
-        for ( let index= 1;  index< args.length; index++){
-             if(fun(first,args[index]) == false)
-               return false; 
+        for (let index = 1; index < args.length; index++) {
+            if (fun(first, args[index]) == false)
+                return false;
             first = args[index];
         }
 
@@ -157,6 +158,7 @@ let builtInEnvDict = {
     'isLesser': translativeMethod(function () {
         return arguments[0] < arguments[1];
     }, 'isLesser'),
+    'Array': arrayCreate,
 
 
 };
@@ -190,6 +192,19 @@ export function extendEnvironment(base: Environment) {
 }
 
 export function printEnvironment(environment: Environment): string {
+    if (environment.hasItem("internalData")) {
+        let array = environment.getItem("internalData") as any[];
+        let ret = "{"
+        array.forEach(value => {
+            ret += value;
+            ret += ",";
+        });
+        ret += "}";
+        return ret ;
+
+    }
+
+
     let ret = "{"
     Object.keys(environment.dict).forEach(key => {
         ret += key;

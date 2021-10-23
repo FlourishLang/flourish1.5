@@ -47,7 +47,8 @@
           
           return `(${children.map(formatNode).join(' ')})`
           break;
-  
+        case 'attributelist':
+          return tree.children.map(formatNode).join('');
         default:
           return defaltFormating(tree);
       }
@@ -82,7 +83,7 @@
 
     CodeMirror.treeZipperInit(treeZipper);
 
-    CodeMirror.treeZipperAdjustPosition({ row: line, column: 0 }, { row: line + 1, column: 0 });
+    CodeMirror.treeZipperAdjustPositionExclusive({ row: line, column: 0 }, { row: line + 1, column: 0 });
 
     do  {
       let tree = CodeMirror.treeZipperGetNode();

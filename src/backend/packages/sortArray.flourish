@@ -1,0 +1,44 @@
+
+
+let SortingPackages 0
+
+let sampleUnsorted [Array 5 0]
+sampleUnsorted . resetAtIndex 0 5
+sampleUnsorted . resetAtIndex 1 4
+sampleUnsorted . resetAtIndex 2 62
+sampleUnsorted . resetAtIndex 3 1
+sampleUnsorted . resetAtIndex 4 3
+
+print sampleUnsorted
+
+def [ sortArray input : sampleUnsorted ] :
+  
+  
+  
+  
+  
+  let n input . length
+  while (n > 0) :
+    forEach i v [input . slice 0 [- 0 1]] :
+      if (v > [input . index (i + 1)]) :
+      let temp [input . index (i + 1)]
+    input.resetAtIndex (i + 1) [input.index i ]
+    
+      input.resetAtIndex i temp
+   
+    end
+    
+    end
+    reset n (n - 1)
+  end
+  
+  return input
+  
+end
+
+
+
+
+
+defPackage sortArray
+

@@ -3,6 +3,7 @@ import FNode from "../FNode";
 import Environment from '../environment'
 import ifProcessorFunction from './if'
 import whileProcessorFunction from './while'
+import forEachProcessorFunction from './forEach'
 import fnDefProcessorFunction from './fnDef'
 import classDefProcessorFunction from './classDef'
 import { methodDefProcessorFunction } from './classDef'
@@ -72,6 +73,10 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
                         case "whileStatement":
                             yield* whileProcessorFunction(mayBeStatement, localEnvironment, lineConsole);
                             break;
+                        case "forEachStatement":
+                            yield* forEachProcessorFunction(mayBeStatement, localEnvironment, lineConsole);
+                            break
+                            
 
                         case "functionDefStatement":
                             yield* fnDefProcessorFunction(mayBeStatement, localEnvironment, lineConsole);

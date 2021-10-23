@@ -74,9 +74,54 @@
   }
 
 
+  function treeZipperAdjustPositionExclusive(startPos, endPos) {
+
+    while (currentTreeCursor) {
+      if (_comparePos(endPos, currentTreeCursor.node.startPosition) < 0) {
+        currentTreeCursor = currentTreeCursor.prevSibling;
+      }
+      else if (_comparePos(startPos, currentTreeCursor.node.startPosition) < 0 && currentTreeCursor.prev)
+        currentTreeCursor = currentTreeCursor.prev;
+      else if (currentTreeCursor.prev && _comparePos(startPos, currentTreeCursor.prev.node.startPosition) == 0)
+        currentTreeCursor = currentTreeCursor.prev;
+      else 
+        break;
+
+    }
+
+
+
+
+    while (currentTreeCursor) {
+      if (_comparePos(currentTreeCursor.node.endPosition, startPos) < 0) {
+        currentTreeCursor = currentTreeCursor.nextSibling;
+      }
+      else if (_comparePos(currentTreeCursor.node.startPosition, startPos) >= 0) {
+        break;
+      }
+      else {
+        if (currentTreeCursor.next)
+          currentTreeCursor = currentTreeCursor.next;
+        else {
+          break;
+        }
+
+
+      }
+
+    }
+
+    // 
+
+
+  }
+
+
 
   CodeMirror["treeZipperInit"] = treeZipperInit;
   CodeMirror["treeZipperAdjustPosition"] = treeZipperAdjustPosition;
+  CodeMirror["treeZipperAdjustPositionExclusive"] = treeZipperAdjustPositionExclusive;
+
   CodeMirror["treeZipperGetNode"] = () => currentTreeCursor ? currentTreeCursor.node : null;
   CodeMirror["treeZipperMoveNext"] = () => {
     if (currentTreeCursor.next)

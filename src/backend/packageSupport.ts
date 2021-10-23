@@ -56,7 +56,7 @@ function canonicalizeEnvironment(env: any) {
 
         let iter = env.apply(null, arguments);
         let result = iter.next();
-        if (result.done == true && result.value.type != "error") {
+        if (result.done == true && (!result.value ||result.value.type != "error")) {
             return canonicalizeParent(result.value);
         }
         else throw "Package internal error" + result.value.error.message;
@@ -64,8 +64,20 @@ function canonicalizeEnvironment(env: any) {
 
 
     }
+
+    function* wrapperGeneratorFunction() {
+        let iter = env.apply(null, arguments);
+        let result = iter.next();
+        if (result.done == true && (!result.value ||result.value.type != "error")) {
+            return result.value;
+        }
+        else throw "Package internal error" + result.value.error.message;
+    }
+
     if (env.name == "classConstructor") {
-        return wrapperGeneratorClassConstructor;
+        return [wrapperGeneratorClassConstructor,"class"];
+    }else{
+        return [wrapperGeneratorFunction, "function"];
     }
 
 
@@ -123,7 +135,12 @@ export function* importPackage(args: FNode[], env: Environment) {
     let exportedEnv = getPossibleCachedPackage(packageName, env);
 
     if (exportedEnv) {
-        env.setItem(packageName, canonicalizeEnvironment(exportedEnv.getItem(packageName)))
+
+        let [packageContent,packageType]= canonicalizeEnvironment(exportedEnv.getItem(packageName))
+
+        env.setItem(packageName, packageContent)
+        return packageType;
+
     } else {
         throw "Failed to import package";
     }
