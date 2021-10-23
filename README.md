@@ -14,5 +14,8 @@ The significant shift in computer programing happened in the 1940s when the stor
 However, as the computers got more and more complex complete simulation required additional layers of abstraction and the use of additional tools such as a debugger. The discrepancy in the mentally simulated model and computer-executed flow results in bugs. Most of the time in software development goes for perfecting mentally simulated flow to that of computers. The gap between the mental stimulation and the seeing result of execution increases the time required to minimize this discrepancy. Tools like an interpreter, debugger, unit tests reduce the discrepancy and help programmer to align their mental model.
 With Flourish we plan to avoid the simulation required to write the programs, rather see the instantaneous result and refine as we go. So the won't be a single instance of where we write the code and wait to see if executed perfectly. This means a lot of our favorite means of programming need to be revisited...
 
+## How to test
+Use following commands in your favorite terminal `npm install;npm start`. 
+Which should launch a server that can be accessed at http://localhost:9000
 ## WIP screen cast
-images/samplePlay.mov
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/QEvUtLPW7ro/0.jpg)](https://www.youtube.com/watch?v=QEvUtLPW7ro)
