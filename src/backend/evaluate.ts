@@ -6,12 +6,15 @@ import { defPackage, importPackage } from "./packageSupport";
 
 
 export class ERROR {
+    suggestions: { keyword: string, alternatives: string[] }
     constructor(readonly message: string,
-        readonly startPosition: FNodePoint = { column: 0, row: 0 },
-        readonly endPosition: FNodePoint = { column: 0, row: 0 }) {
+        public startPosition: FNodePoint = { column: 0, row: 0 },
+        public endPosition: FNodePoint = { column: 0, row: 0 }) {
         this.message = message;
         this.startPosition = startPosition;
         this.endPosition = endPosition;
+        this.suggestions = { keyword: "", alternatives: [] }
+
     }
 
     hasValidPosition() {
@@ -19,9 +22,17 @@ export class ERROR {
             this.startPosition.column == this.endPosition.column)
     }
 
+    appendAst(ast: FNode){
+        this.startPosition = ast.startPosition;
+        this.endPosition = ast.endPosition;
+    }
+    
+
     static fromAst(ast: FNode, message: string) {
         return new ERROR(message, ast.startPosition, ast.endPosition);
     }
+
+    
 }
 
 export class ExternalMutationERROR extends ERROR {
@@ -30,6 +41,8 @@ export class ExternalMutationERROR extends ERROR {
         super("External mutation")
     }
 }
+
+
 
 
 
@@ -270,7 +283,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
                     } catch (error) {
                         if (error.hasValidPosition && !error.hasValidPosition()) {
 
-                            error = ERROR.fromAst(ast, error.message);
+                             error.appendAst(ast);
                         }
                         throw error;
                     }

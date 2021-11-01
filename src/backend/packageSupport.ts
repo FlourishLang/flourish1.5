@@ -3,6 +3,7 @@ import Environment from "./environment";
 import Parser from "./parser"
 import Executer from "./executer";
 import LineConsole from "./lineConsole";
+import { ERROR } from "./evaluate";
 
 
 
@@ -44,8 +45,8 @@ function canonicalizeEnvironment(env: any) {
                 }
             }
         }
-        
-        Object.assign(parentEnvironment.dict,newParentEnv);
+
+        Object.assign(parentEnvironment.dict, newParentEnv);
 
         return environment;
     }
@@ -56,7 +57,7 @@ function canonicalizeEnvironment(env: any) {
 
         let iter = env.apply(null, arguments);
         let result = iter.next();
-        if (result.done == true && (!result.value ||result.value.type != "error")) {
+        if (result.done == true && (!result.value || result.value.type != "error")) {
             return canonicalizeParent(result.value);
         }
         else throw "Package internal error" + result.value.error.message;
@@ -68,15 +69,15 @@ function canonicalizeEnvironment(env: any) {
     function* wrapperGeneratorFunction() {
         let iter = env.apply(null, arguments);
         let result = iter.next();
-        if (result.done == true && (!result.value ||result.value.type != "error")) {
+        if (result.done == true && (!result.value || result.value.type != "error")) {
             return result.value;
         }
         else throw "Package internal error" + result.value.error.message;
     }
 
     if (env.name == "classConstructor") {
-        return [wrapperGeneratorClassConstructor,"class"];
-    }else{
+        return [wrapperGeneratorClassConstructor, "class"];
+    } else {
         return [wrapperGeneratorFunction, "function"];
     }
 
@@ -123,26 +124,52 @@ function getPossibleCachedPackage(packageName: string, env: Environment): any {
         return loadedPackages[packageName];
     }
 }
+/** 
+ * Adds packages name for completion. (stub for now)
+ * TODO: iterate the directory for files
+ * @param hint 
+ * @returns 
+ */
 
+function getAllPackageNameForCompletion(hint:string) {
+    return ['vector', 'sortArray'];
+}
 
 export function* importPackage(args: FNode[], env: Environment) {
-    if (!args.length)
-        throw `Package name missing`;
+    if (!args.length) {
+        let err = new ERROR('Package name missing');
+        err.suggestions.alternatives = getAllPackageNameForCompletion('')
+        throw err;
+
+    }
+
 
     let packageName = args[0].children[0].leafText;
 
+    let exportedEnv = null;
+    try {
+        exportedEnv = getPossibleCachedPackage(packageName, env);
+    } catch (error) {
+        if (error?.code == "ENOENT")
+            exportedEnv = null;
+        else throw error;
 
-    let exportedEnv = getPossibleCachedPackage(packageName, env);
+    }
+     
 
     if (exportedEnv) {
 
-        let [packageContent,packageType]= canonicalizeEnvironment(exportedEnv.getItem(packageName))
+        let [packageContent, packageType] = canonicalizeEnvironment(exportedEnv.getItem(packageName))
 
         env.setItem(packageName, packageContent)
         return packageType;
 
     } else {
-        throw "Failed to import package";
+        let err = new ERROR('Failed to import package');
+        err.suggestions.alternatives = getAllPackageNameForCompletion(packageName);
+        err.suggestions.keyword = packageName;
+        throw err;
+
     }
 
 }

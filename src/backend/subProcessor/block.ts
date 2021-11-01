@@ -1,6 +1,6 @@
 import LineConsole from "../lineConsole";
 import FNode from "../FNode";
-import Environment from '../environment'
+import Environment, { listEnvironment } from '../environment'
 import ifProcessorFunction from './if'
 import whileProcessorFunction from './while'
 import forEachProcessorFunction from './forEach'
@@ -10,6 +10,7 @@ import { methodDefProcessorFunction } from './classDef'
 
 
 import evaluate from "../evaluate";
+import { specialEnv } from "../evaluate";
 import { ERROR, ExternalMutationERROR } from "../evaluate";
 import { extendEnvironment, printEnvironment } from '../environment'
 import { processorYield, processorInput } from '../executer'
@@ -26,15 +27,15 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
     let result: processorInput | null = null;
     let internalMutation = false;
 
-    let  exportEnv = null;
-    if (environment.getItem('___export_env') ) {
+    let exportEnv = null;
+    if (environment.getItem('___export_env')) {
         exportEnv = environment.getItem('___export_env');
-        environment.setItem('___export_env',null);
+        environment.setItem('___export_env', null);
     }
 
 
 
-    let localEnvironment;
+    let localEnvironment: Environment;
 
     do {
 
@@ -76,7 +77,7 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
                         case "forEachStatement":
                             yield* forEachProcessorFunction(mayBeStatement, localEnvironment, lineConsole);
                             break
-                            
+
 
                         case "functionDefStatement":
                             yield* fnDefProcessorFunction(mayBeStatement, localEnvironment, lineConsole);
@@ -103,7 +104,6 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
 
 
                         default:
-                            debugger;
                             throw ERROR.fromAst(mayBeStatement, 'Unhandled statement')
                             break;
                     }
@@ -119,7 +119,10 @@ export default function* statementBlockProcessor(body: FNode, environment: Envir
             }
 
         } catch (error) {
-            console.log(error);
+            if (isRetry) {
+                console.log(error);
+            }
+            error = suggestFixForError(error, localEnvironment, mayBeStatement);
             caughtError = error;
         }
 
@@ -196,6 +199,40 @@ export function patchErrorToEvent(error: ERROR | null): processorYield {
             activeBlock: null
         }
     }
+}
+
+
+
+
+
+function suggestFixForError(error: ERROR, env: Environment, mayBeStatement: FNode) {
+
+    if ( (!error?.suggestions?.alternatives.length) && error.message?.startsWith('Cannot find') || error.message?.startsWith("Can't find identifier")) {
+        let list = Object.keys(specialEnv).concat(listEnvironment(env).concat(['if', 'def', 'class']))
+        let identifier = error.message.substr(error.message.search(":") + 2)
+        let suggestion = list.filter(i => i.startsWith(identifier));
+        let suggestionObject = suggestion.map(i => ({
+            displayText: `${i}`,
+            text: `${i} `,
+            key:null
+        }))
+
+        suggestionObject.push({
+            displayText: "[if]",
+            text: 
+`if condition :
+  statement
+end `,
+            key: 'if'
+        })
+
+        //@ts-ignore
+        error.suggestions.alternatives = suggestionObject;
+        error.suggestions.keyword = identifier;
+    }
+
+    return error;
+
 }
 
 

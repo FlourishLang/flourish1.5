@@ -191,6 +191,16 @@ export function extendEnvironment(base: Environment) {
     return env;
 }
 
+
+export function listEnvironment(input: Environment): string[] {
+    
+    let array = Object.keys(input.dict);
+    if (input.superEnvironment)
+        array = array.concat(listEnvironment(input.superEnvironment))
+    return array;
+}
+
+
 export function printEnvironment(environment: Environment): string {
     if (environment.hasItem("internalData")) {
         let array = environment.getItem("internalData") as any[];
@@ -200,7 +210,7 @@ export function printEnvironment(environment: Environment): string {
             ret += ",";
         });
         ret += "}";
-        return ret ;
+        return ret;
 
     }
 
@@ -215,3 +225,5 @@ export function printEnvironment(environment: Environment): string {
     ret += "}";
     return ret;
 }
+
+

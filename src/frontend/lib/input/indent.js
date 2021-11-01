@@ -114,9 +114,12 @@ export function indentLines(cm, n,count,offset, how, aggressive) {
     for (let i = Math.floor(indentation / tabSize); i; --i) {pos += tabSize; indentString += "\t"}
   if (pos < indentation) indentString += spaceStr(indentation - pos)
 
-  if (indentString != curSpaceString) {
-    for (let index = 0; index < count; index++) {
-      replaceRange(doc, indentString, Pos(n+index, 0), Pos(n+index, curSpaceString.length), "+indent")
+
+
+  if ( true) {
+    let start = (indentString != curSpaceString)?0:1;
+    for (let index = start; index < count; index++) {
+      replaceRange(doc, indentString, Pos(n+index, 0), Pos(n+index, 0), "+indent")
       
     }
 
