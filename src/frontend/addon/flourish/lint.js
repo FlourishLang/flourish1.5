@@ -16,6 +16,14 @@
     if (!cm.getDoc().getMode().treeSitterTree)
       return [];
 
+    if (cm.getDoc().getMode().treeSitterErrors.length) {
+      let error = cm.getDoc().getMode().treeSitterErrors[0];
+      if (error.placeholder) {
+        cm.getDoc().setSelection(CodeMirror.Pos(error.startPosition.row, error.startPosition.column),
+          CodeMirror.Pos(error.endPosition.row, error.endPosition.column));
+      }
+    }
+
     return cm.getDoc().getMode().treeSitterErrors.map(e => ({
       from: CodeMirror.Pos(e.startPosition.row, e.startPosition.column),
       to: CodeMirror.Pos(e.endPosition.row, e.endPosition.column),

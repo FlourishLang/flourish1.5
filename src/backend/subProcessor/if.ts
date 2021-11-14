@@ -1,5 +1,5 @@
 import blockExecutor from './block';
-import  evaluate  from '../evaluate';
+import  evaluate, { ERROR }  from '../evaluate';
 import LineConsole from "../lineConsole";
 import FNode from "../FNode";
 import Environment from '../environment'
@@ -18,7 +18,25 @@ export default function* ifProcessorFunction(tree: FNode, environment: Environme
 
     let expressionNode = tree.children[0].children[0].children[1];
     let endNode = tree.children[0].children[tree.children[0].children.length - 1]
-    let result = yield* evaluate(expressionNode, environment);
+
+    let result = null;
+    try {
+        result = yield* evaluate(expressionNode, environment);    
+    } catch (error ) {
+        if(error.message == "Can't find identifier: condition" )
+        {
+            let innerError = error as ERROR;
+            innerError.message = "Update the placeholder <condition>"
+            innerError.placeholder = true;
+
+            throw innerError;
+        }
+        throw error;
+        
+        
+        
+    }
+    
 
     lineConsole.log(expressionNode.startPosition.row, "" + (result != false));
     lineConsole.log(endNode.startPosition.row, "");

@@ -7,7 +7,9 @@ import { defPackage, importPackage } from "./packageSupport";
 
 export class ERROR {
     suggestions: { keyword: string, alternatives: string[] }
-    constructor(readonly message: string,
+    placeholder:boolean;
+    
+    constructor(public message: string,
         public startPosition: FNodePoint = { column: 0, row: 0 },
         public endPosition: FNodePoint = { column: 0, row: 0 }) {
         this.message = message;
