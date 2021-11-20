@@ -25,38 +25,43 @@ function getCompletionFragment(startIndex, lineContent) {
 
 
 
-//Old static completion list
 
 function flourishHint(codemirror, options) {
 
 
     let errors = codemirror.getMode().treeSitterErrors;
     const cursor = codemirror.getCursor()
-    const token = codemirror.getTokenAt(cursor)
+    // const token = codemirror.getTokenAt(cursor)
     //const start = token.start
     const end = cursor.ch
     const line = cursor.line
-    // const currentWord= token.string
     let lineContent = codemirror.getDoc().getLine(line);
 
     let { fragment, index } = getCompletionFragment(end, lineContent);
+
+
+    function convertSimpleSuggestionToSmartSuggestion(completionList){
+        if (typeof (completionList[0]) == 'string') {
+
+            completionList = completionList.map(i => ({
+                displayText: i,
+                key: null,
+                text: `${i} `
+            }))
+        }
+
+        return completionList;
+    }
+
+
+
     let completionList = [];
     if (errors && errors.length) {
         console.log(errors[0], fragment)
 
         let error1 = errors[0];
         if (error1.suggestions.alternatives.length && error1.suggestions.keyword == fragment) {
-            completionList = error1.suggestions.alternatives;
-            if (typeof (completionList[0]) == 'string') {
-
-                completionList = completionList.map(i => ({
-                    displayText: i,
-                    key: null,
-                    text: `${i} `
-                }))
-            }
-
-
+            completionList = convertSimpleSuggestionToSmartSuggestion(error1.suggestions.alternatives);
         }
     }
 

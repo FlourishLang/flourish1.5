@@ -207,7 +207,15 @@ export function patchErrorToEvent(error: ERROR | null): processorYield {
 
 function suggestFixForError(error: ERROR, env: Environment, mayBeStatement: FNode) {
 
+    
+
     if ( (!error?.suggestions?.alternatives.length) && error.message?.startsWith('Cannot find') || error.message?.startsWith("Can't find identifier")) {
+        
+        if(error.message == "Cannot find command : statement"){
+            error.placeholder =true;
+            return error;
+        }
+
         let list = Object.keys(specialEnv).concat(listEnvironment(env).concat(['if', 'def', 'class']))
         let identifier = error.message.substr(error.message.search(":") + 2)
         let suggestion = list.filter(i => i.startsWith(identifier));

@@ -53,13 +53,14 @@ var editor2 = new CodeMirror(document.getElementById("code_right"), {
 editor.setOption("lineConsole", editor2);
 editor.setOption("extraKeys", {
     Tab: function (cm) {
-        var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-        cm.replaceSelection(spaces);
+        CodeMirror.commands.gotoNextPlaceholder(cm)
+        // var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+        // cm.replaceSelection(spaces);
     },
     'Ctrl-Space': function (cm) {
         CodeMirror.commands.autocomplete(cm);
     },
-    }
+    
 });
 
 

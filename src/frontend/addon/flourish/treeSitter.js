@@ -119,7 +119,7 @@
 
 
 
-        
+
 
         if (treeInfo.activeRange) {
           if (cm.showActiveBlock)
@@ -131,24 +131,24 @@
 
 
 
-          
 
 
-        if (cm.getMode().hasOwnProperty("treeSitterTree") && cm.getMode().name!=="null")
+
+        if (cm.getMode().hasOwnProperty("treeSitterTree") && cm.getMode().name !== "null")
           cm.state.treeSitterParse.liveStatusMarks = cm.getMode().getLiveStatusMarks(treezipper);
         cm.getMode().treeSitterTree = treeInfo.data;
         cm.getMode().treeSitterTreeZipper = treezipper;
         cm.getMode().treeSitterErrors = treeInfo.errors;
-      
 
 
-          if (treeInfo.lineConsole ) {
 
-            cm.getMode().treeSitterTree.lineConsole = state.lineConsole;
+        if (treeInfo.lineConsole) {
 
-            cm.showLineConsoleLog(treeInfo.lineConsole);
+          cm.getMode().treeSitterTree.lineConsole = state.lineConsole;
 
-          }
+          cm.showLineConsoleLog(treeInfo.lineConsole);
+
+        }
 
         if (cm.showAfterErrorMark)
           cm.showAfterErrorMark(treeInfo.errors)
@@ -173,9 +173,9 @@
           }
         })
 
-        CodeMirror.signal(cm,"parseCompleteHandled");
-      
-      
+        CodeMirror.signal(cm, "parseCompleteHandled");
+
+
       });
 
     });

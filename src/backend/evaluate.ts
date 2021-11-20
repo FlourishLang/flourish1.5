@@ -7,8 +7,8 @@ import { defPackage, importPackage } from "./packageSupport";
 
 export class ERROR {
     suggestions: { keyword: string, alternatives: string[] }
-    placeholder:boolean;
-    
+    placeholder: boolean;
+
     constructor(public message: string,
         public startPosition: FNodePoint = { column: 0, row: 0 },
         public endPosition: FNodePoint = { column: 0, row: 0 }) {
@@ -17,6 +17,7 @@ export class ERROR {
         this.endPosition = endPosition;
         this.suggestions = { keyword: "", alternatives: [] }
 
+
     }
 
     hasValidPosition() {
@@ -24,17 +25,17 @@ export class ERROR {
             this.startPosition.column == this.endPosition.column)
     }
 
-    appendAst(ast: FNode){
+    appendAst(ast: FNode) {
         this.startPosition = ast.startPosition;
         this.endPosition = ast.endPosition;
     }
-    
+
 
     static fromAst(ast: FNode, message: string) {
         return new ERROR(message, ast.startPosition, ast.endPosition);
     }
 
-    
+
 }
 
 export class ExternalMutationERROR extends ERROR {
@@ -285,7 +286,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
                     } catch (error) {
                         if (error.hasValidPosition && !error.hasValidPosition()) {
 
-                             error.appendAst(ast);
+                            error.appendAst(ast);
                         }
                         throw error;
                     }
@@ -335,15 +336,30 @@ export default function* evaluate(ast: FNode, env: Environment): any {
 
         case "inifixexpression": {
 
-            let operator = yield* evaluate(ast.children[2], env);
-            let left = yield* evaluate(ast.children[1], env);
-            let right = yield* evaluate(ast.children[3], env);
-            try {
-                return yield* operator.call(null, [left, right], env)
-            } catch (error) {
-                throw ERROR.fromAst(ast, `Internal Exception: ${error.message}`);
+            switch (ast.children.length) {
+                case 3:
+                    {
+                        return yield* evaluate(ast.children[1], env);
+                    }
 
+                    break;
+
+                default:
+                    {
+                        let operator = yield* evaluate(ast.children[2], env);
+                        let left = yield* evaluate(ast.children[1], env);
+                        let right = yield* evaluate(ast.children[3], env);
+                        try {
+                            return yield* operator.call(null, [left, right], env)
+                        } catch (error) {
+                            throw ERROR.fromAst(ast, `Internal Exception: ${error.message}`);
+
+                        }
+                    }
             }
+
+
+
 
             break;
         }
