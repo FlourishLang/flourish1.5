@@ -64,6 +64,14 @@ end`,
         key: 'while'
     }, 
     {
+        displayText: "[forEach loop]",
+        text: `
+forEach forIndex forValue iter:
+  statement
+end`,
+        key: 'forEach'
+    }, 
+    {
         displayText: "[define function]",
         text: `
 def [ anIdentifier anArgument : aValue ] :

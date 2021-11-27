@@ -1,5 +1,6 @@
 import blockExecutor from './block';
 import evaluate from '../evaluate';
+import {ERROR} from '../evaluate';
 import FNode from "../FNode";
 import Environment, { createEnvironment, extendEnvironment } from '../environment'
 import LineConsole from "../lineConsole";
@@ -32,11 +33,36 @@ export default function* forEachProcessorFunction(tree: FNode, environment: Envi
     let keyNode: FNode = null;
     if (tree.children[0].children[0].children.length == 4) {
         identifierRef = tree.children[0].children[0].children[1].children[0];
+        if (identifierRef.leafText == "forValue") {
+            let err = ERROR.fromAst(identifierRef, `placeholder  <forValue> need to updated`);
+            err.suggestions.alternatives = ["elt"];      
+            throw   err    
+        }
+        
         expressionNode = tree.children[0].children[0].children[2];
     }else if(tree.children[0].children[0].children.length == 5){
+
+
+
         keyNode =  tree.children[0].children[0].children[1].children[0];
         identifierRef = tree.children[0].children[0].children[2].children[0];        
         expressionNode = tree.children[0].children[0].children[3];
+
+
+
+        if (keyNode.leafText == "forIndex") {
+            let err = ERROR.fromAst(keyNode, `placeholder  <forIndex> need to updated`);
+            err.suggestions.alternatives = ["k"];      
+            throw   err    
+        }
+
+        if (identifierRef.leafText == "forValue") {
+            let err = ERROR.fromAst(identifierRef, `placeholder  <forValue> need to updated`);
+            err.suggestions.alternatives = ["v"];      
+            throw   err    
+        }
+
+
     }
     let endNode = tree.children[0].children[tree.children[0].children.length - 1];
     let elseBody = tree.children[0].children[2].type != "else_clause" ? null : tree.children[0].children[2].children[1]

@@ -194,7 +194,7 @@ export function extendEnvironment(base: Environment) {
 
 export function listEnvironment(input: Environment): string[] {
     
-    let array = Object.keys(input.dict);
+    let array = Object.keys(input.dict).reverse();
     if (input.superEnvironment)
         array = array.concat(listEnvironment(input.superEnvironment))
     return array;
@@ -202,7 +202,7 @@ export function listEnvironment(input: Environment): string[] {
 
 export function listEnvironmentBelowTop(input: Environment): string[] {
     
-    let array = Object.keys(input.dict);
+    let array = Object.keys(input.dict).reverse();
     if (input.superEnvironment && input.superEnvironment.superEnvironment)
         array = array.concat(listEnvironmentBelowTop(input.superEnvironment))
     return array;
