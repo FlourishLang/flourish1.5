@@ -304,7 +304,9 @@ export default function* evaluate(ast: FNode, env: Environment): any {
                         cmd = yield* evaluate(ast.children[0], env);
                     } catch (error) {
                         if (error.message.includes("Can't find identifier")) {
-                            throw ERROR.fromAst(ast, `Cannot find command : ${ast.children[0].children[0].leafText}`);
+                            let err =  ERROR.fromAst(ast.children[0].children[0], `Cannot find command : ${ast.children[0].children[0].leafText}`);
+                            err.suggestions.keyword =  ast.children[0].children[0].leafText;
+                            throw err;
                         } else {
                             throw error;
                         }

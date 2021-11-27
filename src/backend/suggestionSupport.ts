@@ -10,7 +10,7 @@ function hasSuggestionEmbedded(err: ERROR): boolean {
 }
 
 
-function getSuggestionForPlaceHolderStatement(key: string) {
+function getSuggestionForPlaceHolderStatement(env:Environment,key: string) {
 
 
     let suggestions = [{
@@ -45,7 +45,7 @@ end`,
         displayText: "[print]",
         text: 'print argument',
         key: 'print'
-    },{
+    }, {
         displayText: "[import]",
         text: 'import aPackage',
         key: 'import'
@@ -53,6 +53,19 @@ end`,
     {
         displayText: "[defPackage]",
         text: 'defPackage aPackage',
+        key: 'defPackage'
+    },
+    {
+        displayText: "return",
+        text: 'return ',
+        key: 'return'
+    },
+    {
+        displayText: "[define function]",
+        text: `
+def [ anIdentifier anArgument : aValue ] :
+  statement
+end`,
         key: 'defPackage'
     }
     ];
@@ -64,7 +77,31 @@ end`,
         }
     });
 
-    return suggestions
+    let list = getEnvironmentStatementSuggestion(env,key);
+    return list.concat(suggestions);
+
+}
+
+
+function getEnvironmentStatementSuggestion(env: Environment, keyword: string = "") {
+    return getAllIdentifier(env,keyword);
+}
+
+
+function getAllIdentifier(env: Environment, keyword: string = "") {
+    let list = listEnvironmentBelowTop(env).filter(i => !i.startsWith('_'));
+    let suggestionObjects = list.map(i => ({
+        displayText: `${i}`,
+        text: `${i} `,
+        key: null
+    }))
+
+    if (keyword != "") {
+        return suggestionObjects.filter(i => i.text.startsWith(keyword))
+    } else {
+        return suggestionObjects;
+    }
+
 
 }
 
@@ -78,26 +115,19 @@ export function suggestFixForError(err: ERROR, env: Environment, mayBeStatement:
     if (err.message == "Cannot find command : statement") {
         err.placeholder = true;
         err.message = "Update the placeholder  <statement>"
-        err.suggestions.alternatives = getSuggestionForPlaceHolderStatement("");
+        err.suggestions.alternatives = getSuggestionForPlaceHolderStatement(env,"");
         return err;
     }
 
 
     if (err.message?.startsWith('Cannot find command')) {
-        err.suggestions.alternatives = getSuggestionForPlaceHolderStatement("");
+        err.suggestions.alternatives = getSuggestionForPlaceHolderStatement(env,err.suggestions.keyword);
         return err;
     }
 
-    if (err.message?.startsWith("Can't find identifier")||
-    err.message?.startsWith("Undefined  identifier:")) {
-        let list = listEnvironmentBelowTop(env).filter(i => !i.startsWith('_'));
-        let suggestionObjects = list.map(i => ({
-            displayText: `${i}`,
-            text: `${i} `,
-            key: null
-        }))
-
-        err.suggestions.alternatives = suggestionObjects;
+    if (err.message?.startsWith("Can't find identifier") ||
+        err.message?.startsWith("Undefined  identifier:")) {
+        err.suggestions.alternatives = getAllIdentifier(env);
         return err;
     }
 

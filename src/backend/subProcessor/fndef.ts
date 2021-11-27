@@ -1,7 +1,7 @@
 import FNode from '../FNode';
 import LineConsole from '../lineConsole';
 import blockExecutor from './block';
-import  { specialEnv } from '../evaluate';
+import  { specialEnv ,ERROR} from '../evaluate';
 import Environment, { extendEnvironment } from '../environment';
 
 import { processorType } from '../executer'
@@ -52,10 +52,27 @@ export default function* fnDefProcessorFunction(tree: FNode, environment: Enviro
     let identifierRef = tree.children[0].children[0].children[2];
     let endNode = tree.children[0].children[tree.children[0].children.length - 1];
     let body = tree.children[0].children[1];
-    let paramter = tree.children[0].children[0].children[3];
+    let parameter = tree.children[0].children[0].children[3];
     
-    for (let index = 0; index < paramter.children.length; index++) {
-        const element = paramter.children[index];
+    
+     if(identifierRef.leafText == "anIdentifier"){
+        let err = ERROR.fromAst(identifierRef, `placeholder  <anIdentifier> need to updated`)
+        throw err;
+     }
+
+           
+    
+    for (let index = 0; index < parameter.children.length; index++) {
+        
+        const element = parameter.children[index];
+        if(element.children[0].leafText == "anArgument"){
+            let err = ERROR.fromAst(element.children[0], `placeholder  <anArgument> need to updated`)
+            throw err
+        }
+
+        
+
+
         let paramName = element;
         let argumentExpression = element.children[2].children[0];
         let result = yield* specialEnv.let.call(paramEnvironment, [paramName, argumentExpression], paramEnvironment);
@@ -65,7 +82,7 @@ export default function* fnDefProcessorFunction(tree: FNode, environment: Enviro
     yield* blockExecutor(body, paramEnvironment, lineConsole);
     yield* specialEnv.let.call(outerEnvironment, [{ children: [identifierRef] }, { type: "number", leafText: "0" }], outerEnvironment);
 
-    outerEnvironment.setItem(identifierRef.leafText, createClosure(body, paramter, outerEnvironment, lineConsole));
+    outerEnvironment.setItem(identifierRef.leafText, createClosure(body, parameter, outerEnvironment, lineConsole));
 }
 
 
