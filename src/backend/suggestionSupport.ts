@@ -103,41 +103,6 @@ export function suggestFixForError(err: ERROR, env: Environment, mayBeStatement:
 
 
 
-
-    // err.message?.startsWith('Cannot find')
-
-
-
-    //     if ( err.message?.startsWith('Cannot find') || err.message?.startsWith("Can't find identifier")) {
-
-    //         if (err.message == "Cannot find command : statement") {
-    //             err.placeholder = true;
-    //             return err;
-    //         }
-
-    //         let list = Object.keys(specialEnv).concat(listEnvironment(env).concat(['if', 'def', 'class']))
-    //         let identifier = err.message.substr(err.message.search(":") + 2)
-    //         let suggestion = list.filter(i => i.startsWith(identifier));
-    //         let suggestionObject = suggestion.map(i => ({
-    //             displayText: `${i}`,
-    //             text: `${i} `,
-    //             key: null
-    //         }))
-
-    //         suggestionObject.push({
-    //             displayText: "[if]",
-    //             text:
-    //                 `if (condition) :
-    //   statement
-    // end `,
-    //             key: 'if'
-    //         })
-
-    //         //@ts-ignore
-    //         err.suggestions.alternatives = suggestionObject;
-    //         err.suggestions.keyword = identifier;
-    //     }
-
     return err;
 
 }
