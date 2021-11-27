@@ -14,7 +14,7 @@ import { specialEnv } from "../evaluate";
 import { ERROR, ExternalMutationERROR } from "../evaluate";
 import { extendEnvironment, printEnvironment } from '../environment'
 import { processorYield, processorInput } from '../executer'
-
+import {suggestFixForError} from '../suggestionSupport'
 
 
 
@@ -205,42 +205,5 @@ export function patchErrorToEvent(error: ERROR | null): processorYield {
 
 
 
-function suggestFixForError(error: ERROR, env: Environment, mayBeStatement: FNode) {
-
-    
-
-    if ( (!error?.suggestions?.alternatives.length) && error.message?.startsWith('Cannot find') || error.message?.startsWith("Can't find identifier")) {
-        
-        if(error.message == "Cannot find command : statement"){
-            error.placeholder =true;
-            return error;
-        }
-
-        let list = Object.keys(specialEnv).concat(listEnvironment(env).concat(['if', 'def', 'class']))
-        let identifier = error.message.substr(error.message.search(":") + 2)
-        let suggestion = list.filter(i => i.startsWith(identifier));
-        let suggestionObject = suggestion.map(i => ({
-            displayText: `${i}`,
-            text: `${i} `,
-            key:null
-        }))
-
-        suggestionObject.push({
-            displayText: "[if]",
-            text: 
-`if condition :
-  statement
-end `,
-            key: 'if'
-        })
-
-        //@ts-ignore
-        error.suggestions.alternatives = suggestionObject;
-        error.suggestions.keyword = identifier;
-    }
-
-    return error;
-
-}
 
 

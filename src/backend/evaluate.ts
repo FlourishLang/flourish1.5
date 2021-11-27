@@ -6,7 +6,7 @@ import { defPackage, importPackage } from "./packageSupport";
 
 
 export class ERROR {
-    suggestions: { keyword: string, alternatives: string[] }
+    suggestions: { keyword: string, alternatives: any[] }
     placeholder: boolean;
 
     constructor(public message: string,
@@ -86,6 +86,10 @@ export let specialEnv: { [name: string]: any } = {
         if (args[0].children[0].type !== "identifier") {
             throw ERROR.fromAst(args[0].children[0], `identifier expected found ${args[0].children[0].type}`);
         }
+
+        if(identifier == "anIdentifier")
+            throw ERROR.fromAst(args[0].children[0], `placeholder  <anIdentifier> need to updated`);
+
 
         if (!env.hasItem(identifier)) {
             let res = yield* evaluate(args[1], env);

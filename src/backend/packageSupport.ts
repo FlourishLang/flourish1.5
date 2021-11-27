@@ -11,6 +11,13 @@ export function* defPackage(result: FNode[], env: Environment) {
     if (!result.length)
         throw `Package name missing`;
 
+    if (result[0].children[0].leafText == 'aPackage') {
+        let err = new ERROR('replace the placeholder <aPackage>');
+        err.appendAst(result[0].children[0]);
+        throw err;
+    }
+
+
     let writeToFile = env.getItem("___writeToFile");
     writeToFile(result[0].children[0].leafText);
     return result[0].children[0].leafText;
@@ -131,14 +138,14 @@ function getPossibleCachedPackage(packageName: string, env: Environment): any {
  * @returns 
  */
 
-function getAllPackageNameForCompletion(hint:string) {
+function getAllPackageNameForCompletion(hint: string) {
     return ['vector', 'sortArray'];
 }
 
 export function* importPackage(args: FNode[], env: Environment) {
     if (!args.length) {
         let err = new ERROR('Package name missing');
-        err.suggestions.alternatives = getAllPackageNameForCompletion('')
+        err.suggestions.alternatives = getAllPackageNameForCompletion('').map(i => ' ' + i);
         throw err;
 
     }
@@ -155,7 +162,7 @@ export function* importPackage(args: FNode[], env: Environment) {
         else throw error;
 
     }
-     
+
 
     if (exportedEnv) {
 
@@ -166,6 +173,7 @@ export function* importPackage(args: FNode[], env: Environment) {
 
     } else {
         let err = new ERROR('Failed to import package');
+        err.appendAst(args[0]);
         err.suggestions.alternatives = getAllPackageNameForCompletion(packageName);
         err.suggestions.keyword = packageName;
         throw err;

@@ -10,7 +10,7 @@ function getCompletionFragment(startIndex, lineContent) {
     let index = startIndex;
     let isFirstLoop = true;
     do {
-        if (!isFirstLoop && lineContent[index] == ' ' || lineContent[index] == '['||lineContent[index] == '(') {
+        if (!isFirstLoop && lineContent[index] == ' ' || lineContent[index] == '[' || lineContent[index] == '(') {
             index++;
             break;
         }
@@ -28,7 +28,6 @@ function getCompletionFragment(startIndex, lineContent) {
 
 function flourishHint(codemirror, options) {
 
-
     let errors = codemirror.getMode().treeSitterErrors;
     const cursor = codemirror.getCursor()
     // const token = codemirror.getTokenAt(cursor)
@@ -40,7 +39,7 @@ function flourishHint(codemirror, options) {
     let { fragment, index } = getCompletionFragment(end, lineContent);
 
 
-    function convertSimpleSuggestionToSmartSuggestion(completionList){
+    function convertSimpleSuggestionToSmartSuggestion(completionList) {
         if (typeof (completionList[0]) == 'string') {
 
             completionList = completionList.map(i => ({
@@ -58,22 +57,22 @@ function flourishHint(codemirror, options) {
     let completionList = [];
     if (errors && errors.length) {
         console.log(errors[0], fragment)
-
+        
         let error1 = errors[0];
-        if (error1.suggestions.alternatives.length && error1.suggestions.keyword == fragment) {
+        if (cursor.line == error1.startPosition.row && error1.suggestions.alternatives.length ) {
             completionList = convertSimpleSuggestionToSmartSuggestion(error1.suggestions.alternatives);
         }
     }
 
 
 
-    filterCompletion = ()=>{
+    filterCompletion = () => {
         let filtered = completionList.filter(s => s.key ? s.key.startsWith(fragment) : s.text.startsWith(fragment))
         if (filtered.length == 0) // return all the alternative in case none matching 
             return completionList;
         else
             return filtered;
-            
+
     }
 
 
@@ -93,6 +92,8 @@ function flourishHint(codemirror, options) {
     return data;
 
 }
+flourishHint.supportsSelection = true;
+
 
 CodeMirror.registerHelper("hint", "flourish", flourishHint);
 

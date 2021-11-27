@@ -1,5 +1,5 @@
 import evaluate from '../src/backend/evaluate';
-import { createEnvironment, extendEnvironment, listEnvironment } from '../src/backend/environment';
+import { createEnvironment, extendEnvironment, listEnvironment, listEnvironmentBelowTop } from '../src/backend/environment';
 import assert from 'assert';
 import Parser from '../src/backend/parser';
 
@@ -100,6 +100,24 @@ describe("listEnv", () => {
 
         assert.ok(listEnvironment(environmentExtended).includes('a'))
     });
+
+
+    it('should not list extended environment  ', () => {
+        let environment = createEnvironment();
+        environment.setItem('a', 45);
+        let environmentExtended =  extendEnvironment(environment)
+
+        assert.ok(listEnvironmentBelowTop(environmentExtended).includes('add'))
+    });
+
+    it('should  list builtin environment  ', () => {
+        let environment = createEnvironment();
+        environment.setItem('a', 45);
+        let environmentExtended =  extendEnvironment(environment)
+
+        assert.ok(listEnvironment(environmentExtended).includes('add'))
+    });
+    
 
 
 

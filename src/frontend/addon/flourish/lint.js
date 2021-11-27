@@ -12,11 +12,30 @@ commands.gotoNextPlaceholder = function (cm) {
   if (lastPlaceHolder) {
     cm.getDoc().setSelection(Pos(lastPlaceHolder.startPosition.row, lastPlaceHolder.startPosition.column),
       Pos(lastPlaceHolder.endPosition.row, lastPlaceHolder.endPosition.column));
-    lastPlaceHolder = null;
     return true;
   }
   return false;
 
+};
+
+
+commands.gotoNextError = function (cm) {
+  let error = cm.getDoc().getMode().treeSitterErrors[0];
+  if (error) {
+
+   let  endPosition = { row: error.endPosition.row, column: error.endPosition.column }
+    if (endPosition.row == error.startPosition.row + 1 && endPosition.column == 0) {
+      let line = cm.getDoc().getLine(error.startPosition.row);
+      endPosition.row = error.startPosition.row;
+      endPosition.column = line.length;
+
+    }
+
+
+
+    cm.getDoc().setSelection(Pos(error.startPosition.row, error.startPosition.column),
+      Pos(endPosition.row, endPosition.column));
+  }
 };
 
 

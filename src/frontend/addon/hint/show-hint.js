@@ -165,7 +165,9 @@
       Home: function() {handle.setFocus(0);},
       End: function() {handle.setFocus(handle.length - 1);},
       Enter: handle.pick,
-      Tab: handle.pick,
+      // Tab: handle.pick,//TODO: Handle this via custom keys. This was commented because tab key is conflicting with 
+      // usage of shortcut for switchToPlaceholder
+      
       Esc: handle.close
     };
 

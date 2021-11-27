@@ -200,6 +200,14 @@ export function listEnvironment(input: Environment): string[] {
     return array;
 }
 
+export function listEnvironmentBelowTop(input: Environment): string[] {
+    
+    let array = Object.keys(input.dict);
+    if (input.superEnvironment && input.superEnvironment.superEnvironment)
+        array = array.concat(listEnvironmentBelowTop(input.superEnvironment))
+    return array;
+}
+
 
 export function printEnvironment(environment: Environment): string {
     if (environment.hasItem("internalData")) {

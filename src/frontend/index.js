@@ -40,6 +40,11 @@ CodeMirror.commands.save = function (editorin) {
         localStorage.setItem("edtordata", editor.getValue());
 };
 
+
+setInterval(() => {
+    CodeMirror.commands.save(editor);
+}, 1000)
+
 var editor2 = new CodeMirror(document.getElementById("code_right"), {
     lineNumbers: false,
     readOnly: true,
@@ -53,14 +58,21 @@ var editor2 = new CodeMirror(document.getElementById("code_right"), {
 editor.setOption("lineConsole", editor2);
 editor.setOption("extraKeys", {
     Tab: function (cm) {
-        CodeMirror.commands.gotoNextPlaceholder(cm)
+
+        let result = CodeMirror.commands.gotoNextPlaceholder(cm)
+        if (!result) {
+            CodeMirror.commands.gotoNextError(cm)
+        }
+        CodeMirror.commands.autocomplete(cm);
+
+
         // var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
         // cm.replaceSelection(spaces);
     },
     'Ctrl-Space': function (cm) {
         CodeMirror.commands.autocomplete(cm);
     },
-    
+
 });
 
 
