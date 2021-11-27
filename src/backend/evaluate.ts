@@ -1,5 +1,7 @@
 import FNode, { FNodePoint } from "./FNode";
 import Environment from "./environment";
+import {listEnvironment} from "./environment";
+
 import { defPackage, importPackage } from "./packageSupport";
 
 
@@ -173,7 +175,7 @@ export let specialEnv: { [name: string]: any } = {
         }
 
     },
-    'get': function get(arg: FNode, env: Environment): any {
+    'get': function get(arg: FNode, env: Environment,isProperty:boolean = false): any {
 
         if (arg.type == "identifier") {
 
@@ -183,7 +185,16 @@ export let specialEnv: { [name: string]: any } = {
 
 
             if (value === undefined) {
-                throw ERROR.fromAst(arg, `Can't find identifier: ${identifier}`);
+                
+                if(!isProperty){
+                    throw ERROR.fromAst(arg, `Can't find identifier: ${identifier}`);
+                }else{
+                    let err = ERROR.fromAst(arg, `Can't find property: ${identifier}`);
+                    err.suggestions.alternatives = listEnvironment(env)
+                    throw err;
+
+                }
+                
 
             } else {
                 return value;
@@ -200,7 +211,7 @@ export let specialEnv: { [name: string]: any } = {
 
             } else {
                 let objectEnv = object as Environment;
-                return get(arg.children[2], objectEnv);
+                return get(arg.children[2], objectEnv,true);
             }
         }
 
