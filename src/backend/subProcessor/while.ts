@@ -1,5 +1,7 @@
 import blockExecutor from './block';
-import  evaluate  from '../evaluate';
+import evaluate from '../evaluate';
+import { ERROR } from '../evaluate';
+
 import FNode from "../FNode";
 import Environment from '../environment'
 import LineConsole from "../lineConsole";
@@ -23,7 +25,7 @@ function markBlockLiveStatus(block: FNode, status: string) {
 //     return false;
 // }
 
-export default function* whileProcessorFunction(tree: FNode, environment: Environment, lineConsole: LineConsole): processorType{
+export default function* whileProcessorFunction(tree: FNode, environment: Environment, lineConsole: LineConsole): processorType {
 
     let count = 0;
     let maxCount = 100;
@@ -32,12 +34,22 @@ export default function* whileProcessorFunction(tree: FNode, environment: Enviro
     let elseBody = tree.children[0].children[2].type != "else_clause" ? null : tree.children[0].children[2].children[1]
     let body = tree.children[0].children[1];
 
+    if (expressionNode.type == "argument" &&
+        expressionNode.children[0].type == "inifixexpression"
+        && expressionNode.children[0].children[1].children[0].leafText == "aCondition") {
+
+        let err = ERROR.fromAst(expressionNode.children[0].children[1], `placeholder  <aCondition> need to updated`);
+        err.suggestions.alternatives = ["variable < limit"];
+        throw err;
+
+    }
+
     while (count < maxCount) {
 
-        let result = yield* evaluate(expressionNode, environment);        
+        let result = yield* evaluate(expressionNode, environment);
         if (!(result != false))
             break;
-        lineConsole.log(expressionNode.startPosition.row, ""+(result != false));
+        lineConsole.log(expressionNode.startPosition.row, "" + (result != false));
         lineConsole.log(endNode.startPosition.row, "");
 
         markBlockLiveStatus(body, "open");
@@ -52,7 +64,7 @@ export default function* whileProcessorFunction(tree: FNode, environment: Enviro
 
 
     if (count == 0) {
-        lineConsole.log(expressionNode.startPosition.row, ""+false);
+        lineConsole.log(expressionNode.startPosition.row, "" + false);
 
 
         if (elseBody) {

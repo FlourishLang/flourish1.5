@@ -10,7 +10,7 @@ function hasSuggestionEmbedded(err: ERROR): boolean {
 }
 
 
-function getSuggestionForPlaceHolderStatement(env:Environment,key: string) {
+function getSuggestionForPlaceHolderStatement(env: Environment, key: string) {
 
 
     let suggestions = [{
@@ -51,15 +51,18 @@ end`,
         key: 'import'
     },
     {
-        displayText: "[defPackage]",
-        text: 'defPackage aPackage',
-        key: 'defPackage'
-    },
-    {
         displayText: "return",
         text: 'return ',
         key: 'return'
     },
+    {
+        displayText: "[while loop]",
+        text: `
+while (aCondition):
+  statement
+end`,
+        key: 'while'
+    }, 
     {
         displayText: "[define function]",
         text: `
@@ -67,7 +70,11 @@ def [ anIdentifier anArgument : aValue ] :
   statement
 end`,
         key: 'defPackage'
-    }
+    }, {
+        displayText: "[defPackage]",
+        text: 'defPackage aPackage',
+        key: 'defPackage'
+    },
     ];
 
 
@@ -77,14 +84,14 @@ end`,
         }
     });
 
-    let list = getEnvironmentStatementSuggestion(env,key);
+    let list = getEnvironmentStatementSuggestion(env, key);
     return list.concat(suggestions);
 
 }
 
 
 function getEnvironmentStatementSuggestion(env: Environment, keyword: string = "") {
-    return getAllIdentifier(env,keyword);
+    return getAllIdentifier(env, keyword);
 }
 
 
@@ -115,13 +122,13 @@ export function suggestFixForError(err: ERROR, env: Environment, mayBeStatement:
     if (err.message == "Cannot find command : statement") {
         err.placeholder = true;
         err.message = "Update the placeholder  <statement>"
-        err.suggestions.alternatives = getSuggestionForPlaceHolderStatement(env,"");
+        err.suggestions.alternatives = getSuggestionForPlaceHolderStatement(env, "");
         return err;
     }
 
 
     if (err.message?.startsWith('Cannot find command')) {
-        err.suggestions.alternatives = getSuggestionForPlaceHolderStatement(env,err.suggestions.keyword);
+        err.suggestions.alternatives = getSuggestionForPlaceHolderStatement(env, err.suggestions.keyword);
         return err;
     }
 
