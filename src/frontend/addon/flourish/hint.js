@@ -60,6 +60,7 @@ function flourishHint(codemirror, options) {
         
         let error1 = errors[0];
         if (cursor.line == error1.startPosition.row && error1.suggestions.alternatives.length ) {
+            index = error1.startPosition.column;
             completionList = convertSimpleSuggestionToSmartSuggestion(error1.suggestions.alternatives);
         }
     }
