@@ -61,11 +61,11 @@ describe("Executor", () => {
     assert.deepStrictEqual(tree2.root, tree3);
     let executer2 = new Executer(parser2.getTree(), lineConsole);
     let result6 = executer2.execute({ type: "start" });
-    assert.strictEqual(result6!.error?.message, "Can't find identifier: condition");
+    assert.strictEqual(result6!.error?.message, "Update the placeholder <condition>");
 
 
     let result3 = executer.execute({ type: "Mutate", mutatedBlock: changes2.mutatedBlock });
-    assert.strictEqual(result3!.error?.message, "Can't find identifier: condition");
+    assert.strictEqual(result3!.error?.message, "Update the placeholder <condition>");
 
 
   });

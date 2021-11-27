@@ -106,8 +106,7 @@ describe("listEnv", () => {
         let environment = createEnvironment();
         environment.setItem('a', 45);
         let environmentExtended =  extendEnvironment(environment)
-
-        assert.ok(listEnvironmentBelowTop(environmentExtended).includes('add'))
+        assert.ok(!listEnvironmentBelowTop(environmentExtended).includes('add'))
     });
 
     it('should  list builtin environment  ', () => {
