@@ -21,7 +21,7 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: path.join(__dirname, 'liveDist'),
+    static: path.join(__dirname, 'liveDist'),
     compress: true,
     port: 9000,
   },
