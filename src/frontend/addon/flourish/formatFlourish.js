@@ -1,10 +1,10 @@
 // TreeSitter-CodeMirror addon, copyright (c) by Shakthi Prasad GS and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
+import CodeMirror from "../../lib/codemirror"
 
-let CodeMirror = require('../../lib/codemirror')
 
-function indentViaSpace(n) {
+function indentSpace(n) {
   let space = '  ';
   let spaceIndent = '';
 
@@ -23,26 +23,26 @@ function statementFormatter(tree) {
 
     if (tree.children && tree.children.length)
       return tree.children.map(formatNode).join(' ');
-    else return tree.leafText;
+    else if (tree.type == "stringContent")
+      return `"${tree.leafText}"`;
+    else
+      return tree.leafText;
 
   }
 
 
   function formatNode(tree) {
-
     switch (tree.type) {
       case 'compoundExpression':
         return `[${formatNode(tree.children[1])}]`
-
+        break;
       case 'inifixexpression':
         let children = tree.children.slice();
         children.shift();
         children.pop();
-        return `(${children.map(formatNode).join(' ')})`
 
-      //Should not have spaces between dots of attribute
-      case 'attributelist':
-        return tree.children.map(formatNode).join('');
+        return `(${children.map(formatNode).join(' ')})`
+        break;
 
       default:
         return defaultFormatting(tree);
@@ -50,7 +50,15 @@ function statementFormatter(tree) {
 
   }
 
-  return indentViaSpace(tree.indentLevel - 1) + formatNode(tree);
+
+
+
+
+  let result = indentSpace(tree.indentLevel - 1) + formatNode(tree);
+  return result;
+
+
+
 
 
 }
@@ -58,7 +66,7 @@ function statementFormatter(tree) {
 
 
 
-function FormattedLineHelper(treeZipper, line) {
+function getFormattedLineHelper(treeZipper, line) {
 
   function comparePos(pos1, pos2) {
     if (pos1.row != pos2.row)
@@ -70,7 +78,7 @@ function FormattedLineHelper(treeZipper, line) {
 
   CodeMirror.treeZipperInit(treeZipper);
 
-  CodeMirror.treeZipperAdjustPositionExclusive({ row: line, column: 0 }, { row: line + 1, column: 0 });
+  CodeMirror.treeZipperAdjustPosition({ row: line, column: 0 }, { row: line + 1, column: 0 });
 
   do {
     let tree = CodeMirror.treeZipperGetNode();
@@ -83,7 +91,7 @@ function FormattedLineHelper(treeZipper, line) {
       break;
     }
     if (tree.type == "emptylines" && tree.startPosition.row >= line && tree.startPosition.row <= line) {
-      return indentViaSpace(tree.indentLevel - 1);
+      return indentSpace(tree.indentLevel - 1);
     }
 
 
@@ -103,9 +111,8 @@ function FormattedLineHelper(treeZipper, line) {
 
 CodeMirror.registerHelper("format", "flourish", function (cm, start) {
 
-  return FormattedLineHelper(cm.doc.getMode().treeSitterTreeZipper, start.line)
+  return getFormattedLineHelper(cm.doc.getMode().treeSitterTreeZipper, start.line)
 
 
 });
-
 

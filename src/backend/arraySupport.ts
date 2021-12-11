@@ -23,11 +23,11 @@ function* arrayResetAtIndex(argumentsArray: any[], outerEnvironment: Environment
     let attributeListRef = callerNode.children[0];
     let { start: objectIdentifier, end: identifierRef } = getAttributeBase(attributeListRef.children);
     let thisEnvironment = outerEnvironment.getItem(objectIdentifier.leafText) as Environment;
-    let reference = (thisEnvironment as Environment).getItem('__internalReference');
+    let reference = (thisEnvironment as Environment).getItem('internalReference');
 
     if (typeof reference != typeof argumentsArray[1])
         throw new ERROR("Mismatching array element");
-    let data = (thisEnvironment as Environment).getItem('__internalData');
+    let data = (thisEnvironment as Environment).getItem('internalData');
 
     data[argumentsArray[0]] = argumentsArray[1];
 
@@ -65,9 +65,6 @@ function* arrayIndex(argumentsArray: any[], outerEnvironment: Environment, calle
 
 export function* arrayCreate(argumentsArray: any[]) {
 
-    if(argumentsArray.length <2)
-        throw new ERROR("Two no of parameters expected");
-    
     let arrayEnv = extendEnvironment(getReferenceArray());
     let length = argumentsArray[0];
     let reference = argumentsArray[1];
