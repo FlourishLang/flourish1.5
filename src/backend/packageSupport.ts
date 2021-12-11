@@ -4,6 +4,7 @@ import Parser from "./parser"
 import Executer from "./executer";
 import LineConsole from "./lineConsole";
 import { ERROR } from "./evaluate";
+import { throwPlaceHolder } from "./suggestionSupport";
 
 
 
@@ -11,11 +12,9 @@ export function* defPackage(result: FNode[], env: Environment) {
     if (!result.length)
         throw `Package name missing`;
 
-    if (result[0].children[0].leafText == 'aPackage') {
-        let err = new ERROR('replace the placeholder <aPackage>');
-        err.appendAst(result[0].children[0]);
-        throw err;
-    }
+    
+
+    throwPlaceHolder(result[0].children[0],'aPackage')
 
 
     let writeToFile = env.getItem("___writeToFile");

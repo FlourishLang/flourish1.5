@@ -23,11 +23,11 @@ function* arrayResetAtIndex(argumentsArray: any[], outerEnvironment: Environment
     let attributeListRef = callerNode.children[0];
     let { start: objectIdentifier, end: identifierRef } = getAttributeBase(attributeListRef.children);
     let thisEnvironment = outerEnvironment.getItem(objectIdentifier.leafText) as Environment;
-    let reference = (thisEnvironment as Environment).getItem('internalReference');
+    let reference = (thisEnvironment as Environment).getItem('__internalReference');
 
     if (typeof reference != typeof argumentsArray[1])
         throw new ERROR("Mismatching array element");
-    let data = (thisEnvironment as Environment).getItem('internalData');
+    let data = (thisEnvironment as Environment).getItem('__internalData');
 
     data[argumentsArray[0]] = argumentsArray[1];
 
@@ -40,14 +40,14 @@ function* arraySlice(argumentsArray: any[], outerEnvironment: Environment, calle
     let { start: objectIdentifier, end: identifierRef } = getAttributeBase(attributeListRef.children);
     let thisEnvironment = outerEnvironment.getItem(objectIdentifier.leafText) as Environment;
 
-    let data = (thisEnvironment as Environment).getItem('internalData');
+    let data = (thisEnvironment as Environment).getItem('__internalData');
     let slicedArray = data.slice(argumentsArray[0],argumentsArray[1]);
 
     let arrayEnv = extendEnvironment(getReferenceArray());
     let length = slicedArray.length;
     arrayEnv.setItem('length', length);
-    arrayEnv.setItem('internalData', slicedArray);
-    arrayEnv.setItem('internalReference', (thisEnvironment as Environment).getItem('internalReference'));
+    arrayEnv.setItem('__internalData', slicedArray);
+    arrayEnv.setItem('__internalReference', (thisEnvironment as Environment).getItem('__internalReference'));
 
 
     return arrayEnv;
@@ -58,7 +58,7 @@ function* arrayIndex(argumentsArray: any[], outerEnvironment: Environment, calle
     let attributeListRef = callerNode.children[0];
     let { start: objectIdentifier, end: identifierRef } = getAttributeBase(attributeListRef.children);
     let thisEnvironment = outerEnvironment.getItem(objectIdentifier.leafText) as Environment;
-    let data = (thisEnvironment as Environment).getItem('internalData');
+    let data = (thisEnvironment as Environment).getItem('__internalData');
     return data[argumentsArray[0]];
 }
 
@@ -74,8 +74,8 @@ export function* arrayCreate(argumentsArray: any[]) {
     let ret = new Array(length);
     ret.fill(reference, 0, length);
     arrayEnv.setItem('length', length);
-    arrayEnv.setItem('internalData', ret);
-    arrayEnv.setItem('internalReference', reference);
+    arrayEnv.setItem('__internalData', ret);
+    arrayEnv.setItem('__internalReference', reference);
 
 
     return arrayEnv;

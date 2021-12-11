@@ -1,7 +1,7 @@
 import FNode, { FNodePoint } from "./FNode";
 import Environment from "./environment";
-import {listEnvironment} from "./environment";
-
+import { listEnvironment } from "./environment";
+import { throwPlaceHolder } from './suggestionSupport'
 import { defPackage, importPackage } from "./packageSupport";
 
 
@@ -89,10 +89,9 @@ export let specialEnv: { [name: string]: any } = {
             throw ERROR.fromAst(args[0].children[0], `identifier expected found ${args[0].children[0].type}`);
         }
 
-        if(identifier == "anIdentifier")
-            throw ERROR.fromAst(args[0].children[0], `placeholder  <anIdentifier> need to updated`);
+        throwPlaceHolder(args[0].children[0],"anIdentifier");
 
-
+      
         if (!env.hasItem(identifier)) {
             let res = yield* evaluate(args[1], env);
             if (res == null)
@@ -120,6 +119,9 @@ export let specialEnv: { [name: string]: any } = {
 
 
         let identifier = args[0].children[0].leafText;
+
+        throwPlaceHolder(args[0].children[0],"aProperty");
+
         if (args[0].children[0].type !== "identifier") {
             throw ERROR.fromAst(args[0].children[0], `identifier expected found ${args[0].children[0].type}`);
         }
@@ -175,7 +177,7 @@ export let specialEnv: { [name: string]: any } = {
         }
 
     },
-    'get': function get(arg: FNode, env: Environment,isProperty:boolean = false): any {
+    'get': function get(arg: FNode, env: Environment, isProperty: boolean = false): any {
 
         if (arg.type == "identifier") {
 
@@ -185,16 +187,16 @@ export let specialEnv: { [name: string]: any } = {
 
 
             if (value === undefined) {
-                
-                if(!isProperty){
+
+                if (!isProperty) {
                     throw ERROR.fromAst(arg, `Can't find identifier: ${identifier}`);
-                }else{
+                } else {
                     let err = ERROR.fromAst(arg, `Can't find property: ${identifier}`);
                     err.suggestions.alternatives = listEnvironment(env)
                     throw err;
 
                 }
-                
+
 
             } else {
                 return value;
@@ -211,7 +213,7 @@ export let specialEnv: { [name: string]: any } = {
 
             } else {
                 let objectEnv = object as Environment;
-                return get(arg.children[2], objectEnv,true);
+                return get(arg.children[2], objectEnv, true);
             }
         }
 
@@ -280,7 +282,11 @@ export default function* evaluate(ast: FNode, env: Environment): any {
         let error = ast.children.find(i => i.isMissingNode || i.type === "ERROR");
         if (error) {
             if (error.isMissingNode) {
-                throw new ERROR(`Syntax error missing ${subject(error)}`, error.startPosition, error.endPosition);
+                
+                let err= new ERROR(`Syntax error missing ${subject(error)}`, ast.startPosition, ast.endPosition);
+                err.suggestions.keyword = ast.Text;
+                throw err;
+
             } else {
                 throw new ERROR(`Syntax error unexpected ${subject(error)}`, error.startPosition, error.endPosition);
             }
@@ -315,8 +321,8 @@ export default function* evaluate(ast: FNode, env: Environment): any {
                         cmd = yield* evaluate(ast.children[0], env);
                     } catch (error) {
                         if (error.message.includes("Can't find identifier")) {
-                            let err =  ERROR.fromAst(ast.children[0].children[0], `Cannot find command : ${ast.children[0].children[0].leafText}`);
-                            err.suggestions.keyword =  ast.children[0].children[0].leafText;
+                            let err = ERROR.fromAst(ast.children[0].children[0], `Cannot find command : ${ast.children[0].children[0].leafText}`);
+                            err.suggestions.keyword = ast.children[0].children[0].leafText;
                             throw err;
                         } else {
                             throw error;

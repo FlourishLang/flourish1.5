@@ -56,13 +56,23 @@ end`,
         key: 'return'
     },
     {
+        displayText: "this",
+        text: 'this ',
+        key: 'this'
+    },
+    {
+        displayText: "setThis",
+        key: 'setThis',
+        text: 'setThis ',
+    },
+    {
         displayText: "[while loop]",
         text: `
 while (aCondition):
   statement
 end`,
         key: 'while'
-    }, 
+    },
     {
         displayText: "[forEach loop]",
         text: `
@@ -70,7 +80,7 @@ forEach forIndex forValue iter:
   statement
 end`,
         key: 'forEach'
-    }, 
+    },
     {
         displayText: "[define function]",
         text: `
@@ -83,6 +93,28 @@ end`,
         text: 'defPackage aPackage',
         key: 'defPackage'
     },
+    {
+        displayText: "[class]",
+        text: `
+class [ aClassName anArgument:value ] :
+  setThis aProperty anArgument
+end
+`,
+        key: 'class'
+    },
+    {
+        displayText: "[defMethod]",
+        text: `
+defMethod [ aClassName . aMethodName anArgument : value ] :
+    print this.aProperty
+end
+      
+`,
+        key: 'defMethod'
+    },
+
+
+
     ];
 
 
@@ -121,6 +153,15 @@ function getAllIdentifier(env: Environment, keyword: string = "") {
 }
 
 
+export function throwPlaceHolder(fNode: FNode, placeholder: string = "anIdentifier") {
+
+    if (fNode.leafText == placeholder) {
+        let err = ERROR.fromAst(fNode, `placeholder  <${fNode.leafText}> need to updated`)
+        throw err;
+    }
+
+}
+
 export function suggestFixForError(err: ERROR, env: Environment, mayBeStatement: FNode) {
 
     if (hasSuggestionEmbedded(err)) // No further suggestion is needed.
@@ -145,6 +186,19 @@ export function suggestFixForError(err: ERROR, env: Environment, mayBeStatement:
         err.suggestions.alternatives = getAllIdentifier(env);
         return err;
     }
+
+    if (err.message?.startsWith("Can't find identifier") ||
+        err.message?.startsWith("Undefined  identifier:")) {
+        err.suggestions.alternatives = getAllIdentifier(env);
+        return err;
+    }
+    if (err.message?.startsWith("Syntax error missing identifier")) {
+        if (err.suggestions.keyword.endsWith('.'))
+            err.suggestions.alternatives = [err.suggestions.keyword + 'aProperty']
+        return err;
+    }
+
+
 
 
 

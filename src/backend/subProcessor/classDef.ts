@@ -5,6 +5,7 @@ import { specialEnv } from '../evaluate';
 import Environment, { extendEnvironment, createEmptyEnvironment } from '../environment';
 
 import { processorType } from '../executer'
+import { throwPlaceHolder } from '../suggestionSupport'
 
 
 function markBlockLiveStatus(block: FNode, status: string) {
@@ -50,12 +51,15 @@ function createConstructor(body: FNode, parameters: FNode, environment: Environm
 
 export default function* classDefProcessorFunction(tree: FNode, environment: Environment, lineConsole: LineConsole): processorType {
 
+
     let outerEnvironment = environment;
     let paramEnvironment = extendEnvironment(environment); //Every new try creates a new environment
     paramEnvironment.setItem("___RETURN___", null);
     paramEnvironment.setItem("___THIS___", createEmptyEnvironment());
 
     let identifierRef = tree.children[0].children[0].children[2];
+    throwPlaceHolder(identifierRef,"aClassName");
+
     let endNode = tree.children[0].children[tree.children[0].children.length - 1];
     let body = tree.children[0].children[1];
     let parameter = tree.children[0].children[0].children[3];
@@ -63,6 +67,7 @@ export default function* classDefProcessorFunction(tree: FNode, environment: Env
     for (let index = 0; index < parameter.children.length; index++) {
         const element = parameter.children[index];
         let paramName = element;
+        throwPlaceHolder(paramName.children[0],"anArgument");
         let argumentExpression = element.children[2].children[0];
         let result = yield* specialEnv.let.call(paramEnvironment, [paramName, argumentExpression], paramEnvironment);
     }
@@ -142,6 +147,11 @@ export function* methodDefProcessorFunction(tree: FNode, environment: Environmen
 
     let attributeListRef = tree.children[0].children[0].children[2];
     let { start: objectIdentifier, end: identifierRef } = getAttributeBase(attributeListRef.children);
+
+    throwPlaceHolder(objectIdentifier,"aClassName");
+    
+
+    throwPlaceHolder(identifierRef,"aMethodName");
 
     let objectConstructor = environment.getItem(objectIdentifier.leafText)
     let thisEnvironment = constructReferenceMap.get(objectConstructor);

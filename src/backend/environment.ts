@@ -197,7 +197,7 @@ export function listEnvironment(input: Environment): string[] {
     let array = Object.keys(input.dict).reverse();
     if (input.superEnvironment)
         array = array.concat(listEnvironment(input.superEnvironment))
-    return array;
+    return array.filter(i=>!i.startsWith('__'));
 }
 
 export function listEnvironmentBelowTop(input: Environment): string[] {
@@ -210,8 +210,8 @@ export function listEnvironmentBelowTop(input: Environment): string[] {
 
 
 export function printEnvironment(environment: Environment): string {
-    if (environment.hasItem("internalData")) {
-        let array = environment.getItem("internalData") as any[];
+    if (environment.hasItem("__internalData")) {
+        let array = environment.getItem("__internalData") as any[];
         let ret = "{"
         array.forEach(value => {
             ret += value;

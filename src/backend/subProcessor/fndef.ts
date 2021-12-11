@@ -3,6 +3,7 @@ import LineConsole from '../lineConsole';
 import blockExecutor from './block';
 import  { specialEnv ,ERROR} from '../evaluate';
 import Environment, { extendEnvironment } from '../environment';
+import {throwPlaceHolder} from '../suggestionSupport'
 
 import { processorType } from '../executer'
 
@@ -43,6 +44,7 @@ function createClosure(body: FNode, parameters: FNode, environment: Environment,
 }
 
 
+
 export default function* fnDefProcessorFunction(tree: FNode, environment: Environment, lineConsole: LineConsole):processorType {
 
     let outerEnvironment = environment;
@@ -54,24 +56,16 @@ export default function* fnDefProcessorFunction(tree: FNode, environment: Enviro
     let body = tree.children[0].children[1];
     let parameter = tree.children[0].children[0].children[3];
     
-    
-     if(identifierRef.leafText == "anIdentifier"){
-        let err = ERROR.fromAst(identifierRef, `placeholder  <anIdentifier> need to updated`)
-        throw err;
-     }
+    throwPlaceHolder(identifierRef)
+
 
            
     
     for (let index = 0; index < parameter.children.length; index++) {
         
         const element = parameter.children[index];
-        if(element.children[0].leafText == "anArgument"){
-            let err = ERROR.fromAst(element.children[0], `placeholder  <anArgument> need to updated`)
-            throw err
-        }
-
+        throwPlaceHolder(element.children[0],"anArgument");
         
-
 
         let paramName = element;
         let argumentExpression = element.children[2].children[0];

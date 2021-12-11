@@ -70,7 +70,7 @@ export default function* forEachProcessorFunction(tree: FNode, environment: Envi
 
     let result = yield* evaluate(expressionNode, environment);
 
-    let array = (result as Environment).getItem("internalData");
+    let array = (result as Environment).getItem("__internalData");
     let iter = array[Symbol.iterator]();
 
 
