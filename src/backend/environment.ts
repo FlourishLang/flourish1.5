@@ -26,6 +26,37 @@ function commutativeMethod(fun: any, name: string) {
     }
 }
 
+function addMethod(fun: any, name: string) {
+    return function* (args: any[], outEnv: Environment, node: any) {
+        if (args.find(item => typeof (item) != "number")) {
+
+            if(typeof (args[0]) == "string" ){
+
+                return args.reduce(function (previous:any,item:any) {
+                    return previous+item;
+                })
+
+            }else if (args[0].constructor.name == 'Environment') {
+                //Support for operator overloading in object
+
+                let method = args[0].getItem(name)
+                if (method) {
+                    let accumulator = args[0];
+                    for (let index = 1; index < args.length; index++) {
+                        const element = args[index];
+                        accumulator = yield* method([accumulator, element], outEnv, node, accumulator);
+                    }
+
+                    return accumulator;
+                }
+
+            }
+            throw new Error("Invalid type for operator")
+        }
+        return args.reduce(fun)
+    }
+}
+
 
 
 
@@ -35,7 +66,7 @@ function translativeMethod(fun: any, name: string) {
             throw new Error("More than one argument expected")
 
         }
-        if (args.find(item => typeof (item) != "number")) {
+        if (args.find(item => typeof (item) != "number" && typeof (item) != "string" )) {
             if (args[0].constructor.name == 'Environment') {
                 let method = args[0].getItem(name)
                 if (method) {
@@ -144,7 +175,7 @@ export default class Environment {
 
 
 let builtInEnvDict = {
-    'add': commutativeMethod((p: any, c: any) => p + c, 'add'),
+    'add': addMethod((p: any, c: any) => p + c, 'add'),
     'multiply': commutativeMethod((p: any, c: any) => p * c, 'multiply'),
     'divide': commutativeMethod((p: any, c: any) => p / c, 'divide'),
     'mod': commutativeMethod((p: any, c: any) => p % c, 'mod'),

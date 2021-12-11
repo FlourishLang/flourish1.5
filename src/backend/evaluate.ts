@@ -363,7 +363,7 @@ export default function* evaluate(ast: FNode, env: Environment): any {
             return parseInt(ast.leafText);
 
         case "string":
-            return ast.children[0].leafText;
+            return ast.children.length == 1 ? ast.children[0].leafText : "";
 
         case "ERROR":
             return ERROR.fromAst(ast, "Syntax error");
