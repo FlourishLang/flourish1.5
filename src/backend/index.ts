@@ -8,7 +8,7 @@ import fs from "fs";
 import debounce from "debounce";
 
 
-
+//Note only use localhost to run to avoid cord error
 const io = new Server(3000, {
   pingInterval: 60000,
   pingTimeout: 5000,
