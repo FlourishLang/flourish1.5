@@ -29,6 +29,32 @@ function statementFormatter(tree) {
       return tree.leafText;
 
   }
+  
+  function functionDeParameterFormatting(tree) {
+    let children = tree.children;
+    let outString = "";
+      outString += defaultFormatting(children.shift());//param
+      outString += defaultFormatting(children.shift());//:
+      outString += defaultFormatting(children.shift());//argument
+    return outString;
+  }
+
+  function functionDefStatementFirstLineFormatting(tree) {
+    let children = tree.children;
+    let colonChild = children.pop();
+    let endBlock = children.pop();
+    let outString = "";
+      outString += defaultFormatting(children.shift());//def
+      outString += ' ';
+      outString += defaultFormatting(children.shift());//[
+      outString += children.map(defaultFormatting).join(' '); 
+      outString += defaultFormatting(endBlock);//]
+      outString += ' ';
+      outString += defaultFormatting(colonChild);//]
+
+      return outString;
+
+  }
 
 
   function formatNode(tree) {
@@ -43,7 +69,13 @@ function statementFormatter(tree) {
 
         return `(${children.map(formatNode).join(' ')})`
         break;
+      case 'functionDefStatementFirstLine':
+        return functionDefStatementFirstLineFormatting(tree);
+      case 'parameter':
+      return functionDeParameterFormatting(tree);
 
+        break;
+  
       default:
         return defaultFormatting(tree);
     }
