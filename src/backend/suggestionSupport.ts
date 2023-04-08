@@ -84,7 +84,7 @@ end`,
     {
         displayText: "[define function]",
         text: `
-def [ anIdentifier anArgument : aValue ] :
+def [anIdentifier anArgument:aValue] :
   statement
 end`,
         key: 'defPackage'
