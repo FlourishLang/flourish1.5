@@ -9,7 +9,10 @@
     max-height: 500px;
   }
   
-
+  .CodeMirror {
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+    }
+    
   .CodeMirror pre {
     padding-left: 7px;
     line-height: 1.25;
